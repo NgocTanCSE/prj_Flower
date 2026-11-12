@@ -152,8 +152,16 @@ export function slugify(text: string): string {
 /** Số lượng sản phẩm hiển thị mỗi trang. */
 const PAGE_SIZE = 8
 
-/** Lấy client (anon) dùng cho yêu cầu đọc công khai của site / admin. */
-async function client(): Promise<SupabaseClient> {
+/**
+ * Lấy client (anon) dùng cho yêu cầu đọc công khai của site / admin.
+ *
+ * Supabase chưa cấu hình (biến môi trường bỏ trống) → `null` trả về để trang
+ * được render không phải gây lỗi `supabaseUrl is required.` lúc build.
+ */
+async function client(): Promise<SupabaseClient | null> {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+  if (!supabaseUrl) return null
+
   return createClient()
 }
 
@@ -161,9 +169,10 @@ async function client(): Promise<SupabaseClient> {
 // Settings
 // ---------------------------------------------------------------------------
 
-/** Quyết tất cả cài đặt (vẫn theo `key`). */
+/** Quyết định tất cả cài đặt (vẫn theo `key`). */
 export async function getSettings(): Promise<Setting[]> {
   const supabase = await client()
+  if (!supabase) return []
   const { data, error } = await supabase.from('settings').select('key, value').order('key')
   if (error) throw new Error(`Lỗi lấy cài đặt: ${error.message}`)
   return data ?? []
@@ -172,6 +181,7 @@ export async function getSettings(): Promise<Setting[]> {
 /** Đọc một cài đặt duy nhất. */
 export async function getSetting(key: string): Promise<string> {
   const supabase = await client()
+  if (!supabase) return ''
   const { data, error } = await supabase.from('settings').select('value').eq('key', key).limit(1).single()
   if (error) throw new Error(`Lỗi lấy cài đặt ${key}: ${error.message}`)
   return data?.value ?? ''
@@ -197,6 +207,8 @@ export async function getSettingsMany<T extends string>(keys: T[]): Promise<Reco
 /** Các danh mục đang hoạt động (hiển thị cho khách). */
 export async function getCategories(): Promise<Category[]> {
   const supabase = await client()
+  if (!supabase) return []
+
   const { data, error } = await supabase
     .from('categories')
     .select('*')
@@ -230,6 +242,8 @@ const SORT_MAP: Record<ProductSort, string> = {
 async function resolveCategory(category?: string): Promise<string | undefined> {
   if (!category || category === 'all') return undefined
   const supabase = await client()
+  if (!supabase) return undefined
+
   const { data, error } = await supabase
     .from('categories')
     .select('id')
@@ -254,6 +268,7 @@ export async function getProducts(params: ProductParams = {}): Promise<ProductLi
   const { page = 1, perPage = PAGE_SIZE, category, sort = 'newest', q, featured = false, minPrice, maxPrice } = params
 
   const supabase = await client()
+  if (!supabase) return { items: [], total: 0, page, perPage, hasMore: false }
 
   let query = supabase
     .from('products')
@@ -308,6 +323,7 @@ export async function getProducts(params: ProductParams = {}): Promise<ProductLi
 /** Sản phẩm nổi bật (`featured_is = true`). */
 export async function getFeaturedProducts(count = 5): Promise<Product[]> {
   const supabase = await client()
+  if (!supabase) return []
   const { data, error } = await supabase
     .from('products')
     .select('*, product_images(*)')
@@ -325,6 +341,7 @@ export async function getFeaturedProducts(count = 5): Promise<Product[]> {
 /** Lấy thông tin chi tiết sản phẩm theo slug (public). */
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   const supabase = await client()
+  if (!supabase) return null
   const { data, error } = await supabase
     .from('products')
     .select('*, product_images(*)')
@@ -349,6 +366,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 /** Đánh giá hiển thị của shop (đã phê duyệt). */
 export async function getReviews(count = 6): Promise<Review[]> {
   const supabase = await client()
+  if (!supabase) return []
   const { data, error } = await supabase
     .from('reviews')
     .select('*')
@@ -363,6 +381,7 @@ export async function getReviews(count = 6): Promise<Review[]> {
 /** Đánh giá theo sản phẩm chi tiết. */
 export async function getProductReviews(productId: number): Promise<Review[]> {
   const supabase = await client()
+  if (!supabase) return []
   const { data, error } = await supabase
     .from('reviews')
     .select('*')
@@ -381,6 +400,7 @@ export async function getProductReviews(productId: number): Promise<Review[]> {
 /** Ảnh gallery công khai (hoạt động). */
 export async function getGalleryImages(category?: string): Promise<GalleryImage[]> {
   const supabase = await client()
+  if (!supabase) return []
   let query = supabase.from('gallery_images').select('*').order('sort_order')
   if (category) query = query.eq('category', category)
   const { data, error } = await query
@@ -395,6 +415,7 @@ export async function getGalleryImages(category?: string): Promise<GalleryImage[
 export async function getAllProductSlugs(): Promise<string[]> {
   try {
     const supabase = await client()
+    if (!supabase) return []
     const { data, error } = await supabase
       .from('products')
       .select('slug')

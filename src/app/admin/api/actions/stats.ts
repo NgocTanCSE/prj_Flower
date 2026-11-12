@@ -1,7 +1,7 @@
 'use server'
 
 import { createAdminClient, requireAdmin } from './auth'
-import { supabase } from '@/lib/supabase/client'
+import { createSupabaseClient } from '@/lib/supabase/client'
 
 // ---------------------------------------------------------------------------
 // Thống kê: summary chạy trên chính schema 0001_init.sql
@@ -38,7 +38,8 @@ export async function getStats(): Promise<Stats> {
   const client = await createAdminClient()
 
   // Tổng `views` của tất cả sản phẩm.
-  const viewsAll = (await supabase.from('products').select('views').single()).data
+  const publicClient = await createSupabaseClient()
+  const viewsAll = publicClient ? (await publicClient.from('products').select('views').single()).data : null
   const viewsTotal = (viewsAll?.views as number) || 0
 
   const all = await client.from('products').select('*', { count: 'exact', head: true })

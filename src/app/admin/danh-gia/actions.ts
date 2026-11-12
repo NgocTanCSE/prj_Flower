@@ -27,6 +27,10 @@ export type ReviewStatus = 'approved' | 'pending' | 'rejected'
 
 async function requireAdmin() {
   const client = await createSupabaseServerClient()
+  if (!client) {
+    throw new Error('Vui lòng đăng nhập tài khoản admin để vào trang danh giá.')
+  }
+
   const {
     data: { user },
     error,

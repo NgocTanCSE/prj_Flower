@@ -11,10 +11,9 @@ export default async function DanhGiaPage() {
   const client = await createSupabaseServerClient()
 
   // Đánh giá + tên sản phẩm (join qua bảng `products`).
-  const { data: reviews, error } = await client
-    .from('reviews')
-    .select('*, product_name:products(name)')
-    .order('created_at', { ascending: false })
+  const { data: reviews, error } = client
+    ? await client.from('reviews').select('*, product_name:products(name)').order('created_at', { ascending: false })
+    : { data: null, error: new Error('Danh sách đánh giá không khả dụng (chưa cấu hình cơ sở dữ liệu).') }
 
   if (error) {
     return (

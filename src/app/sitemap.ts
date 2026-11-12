@@ -39,6 +39,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     // Client không có session (anon) → RLS tự lọc chỉ các sản phẩm `published + is_active`.
     const client = await createClient()
+    if (!client) return urls
+
     const { data: products } = await client
       .from('products')
       .select('slug,updated_at')

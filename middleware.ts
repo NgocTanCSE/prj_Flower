@@ -32,6 +32,11 @@ export async function middleware(request: NextRequest) {
   if (pathname.startsWith('/admin')) {
     const supabase = await createClient(request, response)
 
+    if (!supabase) {
+      // Supabase chưa cấu hình: bỏ qua không truy vấn.
+      return response
+    }
+
     const { data: { session }, error: sessionError } = await supabase.auth.getSession()
 
     if (sessionError || !session) {

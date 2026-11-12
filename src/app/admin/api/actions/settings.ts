@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { logAudit } from '@/lib/upload'
-import { supabase } from '@/lib/supabase/client'
+import { createSupabaseClient } from '@/lib/supabase/client'
 import { requireAdmin, createAdminClient } from './auth'
 import { z } from 'zod'
 import { SETTING_KEYS } from '@/lib/getProducts'
@@ -26,6 +26,9 @@ const settingSchema = z.object(
 
 /** Tất cả cài đặt (các key chưa có sẽ được tạo placeholder). */
 export async function getSettingsForAdmin(): Promise<SettingRow[]> {
+  const supabase = await createSupabaseClient()
+  if (!supabase) return []
+
   const { data, error } = await supabase
     .from('settings')
     .select('key, value, updated_at')
@@ -72,6 +75,9 @@ export async function updateSettings(formData: FormData): Promise<void> {
 
 /** Đọc một cài đặt duy nhất. */
 export async function getSetting(key: string): Promise<string> {
+  const supabase = await createSupabaseClient()
+  if (!supabase) return ''
+
   const { data } = await supabase.from('settings').select('value').eq('key', key).limit(1).single()
   return data?.value ?? ''
 }

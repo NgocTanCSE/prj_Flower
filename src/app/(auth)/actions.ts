@@ -27,6 +27,8 @@ export async function login(prevState: ActionResult, formData: FormData): Promis
   }
 
   const supabase = await ssrAuthClient()
+  if (!supabase) return { error: 'Không thể kết nối cơ sở dữ liệu.' }
+
   const { data, error } = await supabase.auth.signInWithPassword({
     email: parsed.data.email,
     password: parsed.data.password,
@@ -54,6 +56,8 @@ export async function register(prevState: ActionResult, formData: FormData): Pro
   }
 
   const supabase = await ssrAuthClient()
+  if (!supabase) return { error: 'Không thể kết nối cơ sở dữ liệu.' }
+
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
@@ -66,6 +70,8 @@ export async function register(prevState: ActionResult, formData: FormData): Pro
   const user: SupabaseUser | null = data?.user
   if (user) {
     const admin = await ssrAdminClient()
+    if (!admin) return { error: 'Không thể kết nối cơ sở dữ liệu.' }
+
     const { error: profileError } = await admin.from('profiles').insert({
       id: user.id,
       role: 'user',

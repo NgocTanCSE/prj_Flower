@@ -24,6 +24,11 @@ const NOT_ADMIN = 'Bạn không có quyền truy cập admin (role không phù h
 export async function requireAdmin(): Promise<AdminUser> {
   // 1. session của request (bây giờ server-cookies).
   const client = await createSupabaseServerClient()
+  if (!client) {
+    // Supabase chưa cấu hình: lỗi được kiểm soát (dùng `catch` trong trang).
+    throw new Error(SESSION_MISSING)
+  }
+
   const { data, error } = await client.auth.getUser()
   if (error || !data?.user) {
     throw new Error(SESSION_MISSING)
@@ -54,5 +59,11 @@ export async function adminSession(): Promise<{ ok: boolean; user: AdminUser | n
 /** Client có quyền ghi (bypass RLS): service role). */
 export async function createAdminClient(): Promise<SupabaseClient> {
   await requireAdmin()
-  return ssrAdminClient()
+
+  const client = await ssrAdminClient()
+  if (!client) {
+    // Service role key chưa cấu hình: yêu cầu quyền ghi không thực hiện được.
+    throw new Error('Tài khoản quản trị không thể tạo client ghi (thiếu service key).')
+  }
+  return client
 }

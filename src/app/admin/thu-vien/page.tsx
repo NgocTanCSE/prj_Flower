@@ -12,10 +12,9 @@ export default async function ThuVienPage() {
   const client = await createSupabaseServerClient()
 
   // Ảnh đang hoạt động (`gallery_images.is_active`) sắp xếp theo thứ tự.
-  const { data: images, error } = await client
-    .from('gallery_images')
-    .select('id, url, alt, category, sort_order, is_active, created_at')
-    .order('sort_order', { ascending: true, nullsFirst: false })
+  const { data: images, error } = client
+    ? await client.from('gallery_images').select('id, url, alt, category, sort_order, is_active, created_at').order('sort_order', { ascending: true, nullsFirst: false })
+    : { data: null, error: new Error('Danh sách thư viện không khả dụng (chưa cấu hình cơ sở dữ liệu).') }
 
   if (error) {
     return (

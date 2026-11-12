@@ -85,6 +85,8 @@ export interface AuditEntry {
 export async function logAudit(entry: AuditEntry): Promise<void> {
   try {
     const client = await createSupabaseServerClient()
+    if (!client) return
+
     const {
       data: { user },
       error: userError,
@@ -125,6 +127,7 @@ export interface UploadResult {
  */
 export async function uploadImage(file: File, path: string): Promise<UploadResult> {
   const client = createSupabaseClient()
+  if (!client) throw new Error('Không thể tạo client Supabase: URL không được cấu hình.')
 
   const { data: signed, error: signedError } = await client.storage
     .from(BUCKET)

@@ -13,7 +13,13 @@ export const metadata = {
 }
 
 export default async function NewProductPage() {
-  const categories = await getCategories()
+  let categories: Awaited<ReturnType<typeof getCategories>> = []
+  try {
+    categories = await getCategories()
+  } catch {
+    // Supabase chưa cấu hình (hoặc chưa đăng nhập): danh sách rời.
+    categories = []
+  }
 
   return (
     <main>

@@ -28,9 +28,13 @@ export const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gi
 
 /**
  * Tạo client hướng browser (dùng trong client component).
+ * Trả về `null` nếu Supabase chưa được cấu hình để không ném lỗi `supabaseUrl
+ * is required.` trong các server component đang được render lúc build.
+ *
  * Session được lưu bằng cookie từ `@supabase/ssr` khi login qua Midbar.js.
  */
-export function createSupabaseClient(): SupabaseClient {
+export function createSupabaseClient(): SupabaseClient | null {
+  if (!SUPABASE_URL) return null
   return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: { persistSession: true, autoRefreshToken: true },
   })
@@ -40,7 +44,7 @@ export function createSupabaseClient(): SupabaseClient {
  * Tạo client hướng server (dùng trong server component / server action).
  * Tự động gắn session đang có vào cookie yêu cầu via `src/lib/supabase/server.ts`.
  */
-export async function createSupabaseServerClient(): Promise<SupabaseClient> {
+export async function createSupabaseServerClient(): Promise<SupabaseClient | null> {
   if (typeof window !== 'undefined') {
     // Không được chạm `cookies()` từ phía client.
     return createSupabaseClient()

@@ -171,6 +171,10 @@ export async function getSessionUser(): Promise<{ session: SupabaseSession; user
  */
 export async function sendResetLink(email: string): Promise<{ error?: string }> {
   const supabase = await ssrAuthClient()
+  if (!supabase) {
+    return { error: 'Không thể kết nối cơ sở dữ liệu.' }
+  }
+
   const { headers } = await import('next/headers')
   const headersStore = await headers()
   const origin = headersStore.get('origin') ?? (process.env.NEXT_PUBLIC_SITE_URL as string)
@@ -185,6 +189,10 @@ export async function sendResetLink(email: string): Promise<{ error?: string }> 
 /** Cập nhật mật khẩu của user đang đăng nhập (dùng sau magic link reset). */
 export async function updatePassword(newPassword: string, confirmPassword: string): Promise<{ error?: string; redirect?: string }> {
   const supabase = await ssrAuthClient()
+  if (!supabase) {
+    return { error: 'Không thể kết nối cơ sở dữ liệu.' }
+  }
+
   const { data, error } = await supabase.auth.getUser()
   if (error || !data?.user) {
     return { error: 'Vui lòng đăng nhập để đặt lại mật khẩu.' }
@@ -205,6 +213,10 @@ export async function updatePassword(newPassword: string, confirmPassword: strin
  */
 export async function logoutUser(): Promise<{ error?: string }> {
   const supabase = await ssrAuthClient()
+  if (!supabase) {
+    return { error: 'Không thể kết nối cơ sở dữ liệu.' }
+  }
+
   const { error } = await supabase.auth.signOut()
   if (error) return { error: error.message }
   return {}
@@ -218,6 +230,10 @@ export async function logoutUser(): Promise<{ error?: string }> {
 export async function withServerAuth(fn: (profile: Profile | null, user: SupabaseUser, ...rest: any[]) => Promise<any>) {
   return async (...rest: any[]) => {
     const supabase = await ssrAuthClient()
+    if (!supabase) {
+      return { error: 'Không thể kết nối cơ sở dữ liệu.' }
+    }
+
     const { data, error } = await supabase.auth.getUser()
     if (error || !data?.user) {
       return { error: 'Vui lòng đăng nhập để sử dụng tính năng này.' }

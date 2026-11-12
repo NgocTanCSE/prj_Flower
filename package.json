@@ -10,6 +10,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "npx playwright test",
+    "db:reset": "node ./ui/scripts/db-reset.js",
+    "prepare": "node ./ui/scripts/hook-cli.js"
   },
   "dependencies": {
     "next": "^15.1.0",

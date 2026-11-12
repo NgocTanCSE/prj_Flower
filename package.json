@@ -10,8 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "npx playwright test",
-    "db:reset": "node ./ui/scripts/db-reset.js",
-    "prepare": "node ./ui/scripts/hook-cli.js"
+    "validate": "node ./scripts/validate.mjs"
   },
   "dependencies": {
     "next": "^15.1.0",
@@ -24,6 +23,7 @@
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.15",
+    "@playwright/test": "^1.65.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.20",

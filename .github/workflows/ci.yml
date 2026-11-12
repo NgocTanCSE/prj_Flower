@@ -35,6 +35,12 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Validate (type-check + schema + build + legacy)
+        run: npm run validate
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
       - name: Build Next.js (SSR + static)
         run: npm run build
         env:

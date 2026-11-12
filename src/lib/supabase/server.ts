@@ -99,21 +99,26 @@ function clientOptions(supabaseKey: string, methods: CookiesSelf) {
  * - Server Components / Server Actions: gọi không đối số.
  * - Middleware: truyền `request` + `response` để session cookie được đọc/ghi.
  */
+/** Không có URL/SERVICE KEY → client rỗng để module không ném lỗi lúc build. */
 export async function createClient(
   request?: NextRequest,
   response?: NextResponse,
-): Promise<SupabaseClient> {
+): Promise<SupabaseClient | null> {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null
+
   const methods = request ? await middlewareCookieMethods(request, response!) : await serverCookieMethods()
   return createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, clientOptions(SUPABASE_ANON_KEY, methods))
 }
 
 /** Server component/auth client: session cookie đọc từ next/headers. */
-export async function ssrAuthClient(): Promise<SupabaseClient> {
+export async function ssrAuthClient(): Promise<SupabaseClient | null> {
   return createClient()
 }
 
 /** Admin (bypass RLS): dùng service key để truy vấn profiles/hồ sơ người dùng. */
-export async function ssrAdminClient(): Promise<SupabaseClient> {
+export async function ssrAdminClient(): Promise<SupabaseClient | null> {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) return null
+
   const methods = await serverCookieMethods()
   return createServerClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, clientOptions(SUPABASE_SERVICE_ROLE_KEY, methods))
 }
@@ -137,6 +142,8 @@ export interface Profile {
 /** Lấy hồ sơ của user (đăng ký khi đăng ký - A1 viết trigger tạo profile). */
 export async function getProfile(userId: string): Promise<Profile | null> {
   const supabase = await ssrAdminClient()
+  if (!supabase) return null
+
   const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
   if (error || !data) return null
   return (data as unknown as Profile) ?? null
@@ -150,6 +157,8 @@ export function isAdmin(profile: Profile | null | undefined): boolean {
 /** Lấy session + profile của người dùng hiện tại. */
 export async function getSessionUser(): Promise<{ session: SupabaseSession; user: SupabaseUser; profile: Profile | null } | null> {
   const supabase = await ssrAuthClient()
+  if (!supabase) return null
+
   const { data, error } = await supabase.auth.getSession()
   if (error || !data.session) return null
   const profile = await getProfile(data.session.user.id)

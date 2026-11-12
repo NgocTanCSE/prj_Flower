@@ -7,4 +7,6 @@
  * Khi repo có danh sách rules (preferably `.eslintrc` legacy hoặc flat đây),
  * ghi đè file này ở đây sẽ hoạt động ngay.
  */
-export default []
+import nextPlugin from '@next/eslint-plugin-next'
+
+export default [nextPlugin.flatConfig.recommended]

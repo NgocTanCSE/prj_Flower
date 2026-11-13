@@ -44,7 +44,9 @@ CREATE TABLE public.products (
 - `rating` 1..5, `is_approved` chỉ hiển thị cho public nếu `true`.
 
 ### `settings`
-- Key-value cấu hình (20 mục mặc định: shop_name, phone, email, zalo_link...).
+- Key-value cấu hình website (20 mục mặc định: shop_name, phone, email, zalo_link...): chạ `seed.sql`.
+- Giao diện & Thương hiệu (mới, `supabase/migrations/0002_site_settings.sql`): `shop_logo_url`, `shop_favicon_url`, `site_theme_primary`, `site_theme_body`, `shop_hero_title`, `shop_hero_subtitle`.
+- `key` là PRIMARY KEY, cho phép admin cập nhật nhiều cùng lúc (upsert).
 
 ### `product_images`
 - `product_id` FK + `on delete cascade`, `is_primary` = 1.

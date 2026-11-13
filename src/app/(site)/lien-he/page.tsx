@@ -56,22 +56,22 @@ export default async function LienHePage() {
                 <div className="space-y-3 text-sm text-[var(--color-ink-light)]">
                   <p>
                     <span className="font-medium text-[var(--color-ink)]">Địa chỉ:</span>{' '}
-                    {address ?? '123 Nguyễn Thị Định, Phường Nguyễn Cư Trinh, Quận 7, TP. Hồ Chí Minh'}
+                    {address || '123 Nguyễn Thị Định, Phường Nguyễn Cư Trinh, Quận 7, TP. Hồ Chí Minh'}
                   </p>
                   <p>
                     <span className="font-medium text-[var(--color-ink)]">Điện thoại:</span>{' '}
-                    <a href={`tel:${phone ?? '0905888123'}`} className="hover:text-[var(--color-primary)]">
-                      {phone ?? '0905.888.123'}
+                    <a href={`tel:${phone || '0905888123'}`} className="hover:text-[var(--color-primary)]">
+                      {phone || '0905.888.123'}
                     </a>
                   </p>
                   <p>
                     <span className="font-medium text-[var(--color-ink)]">Email:</span>{' '}
-                    <a href={`mailto:${email ?? 'hello@cocobebe.vn'}`} className="hover:text-[var(--color-primary)]">
-                      {email ?? 'hello@cocobebe.vn'}
+                    <a href={`mailto:${email || 'hello@cocobebe.vn'}`} className="hover:text-[var(--color-primary)]">
+                      {email || 'hello@cocobebe.vn'}
                     </a>
                   </p>
                   <p>
-                    <span className="font-medium text-[var(--color-ink)]">Giờ mở cửa:</span> {businessHours}
+                    <span className="font-medium text-[var(--color-ink)]">Giờ mở cửa:</span> {businessHours || 'Thứ Hai - Chủ Nhật: 08:00 - 21:00'}
                   </p>
                 </div>
               </div>
@@ -85,7 +85,7 @@ export default async function LienHePage() {
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <a
-                    href={zaloLink ?? 'https://zalo.me/0905888123'}
+                    href={zaloLink || 'https://zalo.me/0905888123'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-primary flex-1 rounded-full"
@@ -93,7 +93,7 @@ export default async function LienHePage() {
                     Zalo OA
                   </a>
                   <a
-                    href={messengerLink ?? 'https://m.me/cocobebe.vn'}
+                    href={messengerLink || 'https://m.me/cocobebe.vn'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-secondary flex-1 rounded-full"
@@ -108,7 +108,7 @@ export default async function LienHePage() {
                   Kết nối chúng tôi
                 </h2>
                 <div className="mt-4 flex justify-center gap-4">
-                  {[facebookLink ?? 'https://facebook.com/cocobebe.vn', instagramLink ?? 'https://instagram.com/cocobebe.vn'].map(
+                  {[facebookLink || 'https://facebook.com/cocobebe.vn', instagramLink || 'https://instagram.com/cocobebe.vn'].map(
                     (href, i) => (
                       <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[var(--color-tag-bg)] flex items-center justify-center text-[var(--color-primary)] font-bold hover:bg-[var(--color-primary)] hover:text-white transition-colors">
                         {i === 0 ? 'F' : 'I'}

@@ -13,6 +13,8 @@ const GROUPS: Record<string, string[]> = {
   'Mạng xã hội': ['zalo_link', 'messenger_link', 'facebook_link', 'instagram_link'],
   'Giao dịch & tiền tệ': ['allow_orders', 'currency', 'language', 'shipping_fee', 'free_shipping_min', 'tax_rate'],
   'Chính sách & SEO': ['cancel_policy', 'delivery_note', 'seo_meta_title', 'seo_meta_description'],
+  /** Logo/banner/màu chủ đạo — áp vào HTML/`src/styles/site.css` biếntheme */
+  'Thương hiệu & Giao diện': ['shop_logo_url', 'shop_favicon_url', 'site_theme_primary', 'site_theme_body', 'shop_hero_title', 'shop_hero_subtitle'],
 }
 
 export default async function CaiDatPage() {
@@ -27,7 +29,7 @@ export default async function CaiDatPage() {
     <main className="mx-auto max-w-6xl py-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-[#1a1a1a]">Cài đặt trang</h1>
-        <p className="text-sm text-[#5b5b5b]">Thông tin liên hệ, mạng xã hội, giờ mở cửa và SEO.</p>
+        <p className="text-sm text-[#5b5b5b]">Thông tin liên hệ, mạng xã hội, giờ mở cửa, SEO, thương hiệu.</p>
       </div>
 
       <form action={updateSettings}>
@@ -52,7 +54,7 @@ export default async function CaiDatPage() {
                     <label key={key} className="flex flex-col gap-1">
                       <span className="text-sm font-medium text-[#5b5b5b]">{SETTING_KEYS[key]}</span>
                       <input
-                        type={key.endsWith('_link') ? 'url' : 'text'}
+                        type={key.endsWith('_link') || key.endsWith('_url') ? 'url' : 'text'}
                         name={key}
                         defaultValue={find(settings, key)}
                         placeholder={SETTING_KEYS[key]}

@@ -123,6 +123,15 @@ INSERT INTO public.settings (key, value) VALUES
   ('seo_meta_title',      'Tiệm Hoa CoBeCuBe - Hoa tuoi tron niem vui'),
   ('seo_meta_description','Chuyen ban hoa tuoi, hoa cuoi, hoa sinh nhat, hoa qua tang giao hang nhanh tai TP. Ho Chi Minh.');
 
+-- --- New site settings ---
+INSERT INTO public.settings (key, value) VALUES
+  ('shop_logo_url',       ''),
+  ('shop_favicon_url',    '/favicon.svg'),
+  ('site_theme_primary',  '#8b5f65'),
+  ('site_theme_body',     '#1a1a1a'),
+  ('shop_hero_title',     'Bó hoa đẹp cho bạn yêu thương'),
+  ('shop_hero_subtitle',  'Những bó hoa được chọn lọc trong ngày');
+
 -- ------------------
 -- AuditLog: 1 ban ghi chuan
 -- ------------------

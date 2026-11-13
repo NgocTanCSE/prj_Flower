@@ -110,6 +110,13 @@ export const SETTING_KEYS: Record<string, string> = {
   delivery_note: 'Ghi chú giao hàng',
   seo_meta_title: 'SEO Title',
   seo_meta_description: 'SEO Description',
+  // Giao diện & Thương hiệu (0002_site_settings.sql)
+  shop_logo_url: 'URL Logo',
+  shop_favicon_url: 'URL Favicon',
+  site_theme_primary: 'Màu chủ đạo (hex)',
+  site_theme_body: 'Màu chữ chính (hex)',
+  shop_hero_title: 'Tiêu đề banner trang chủ',
+  shop_hero_subtitle: 'Phụ đề banner trang chủ',
 }
 
 /** Các khoảng sắp xếp được cho phép ở bộ sưu tập. */

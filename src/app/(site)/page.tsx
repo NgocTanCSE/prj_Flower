@@ -38,22 +38,26 @@ export default async function HomePage() {
     getReviews(6),
   ])
 
-  const zalo = await getSetting('zalo_link')
-  const messenger = await getSetting('messenger_link')
-  const phone = await getSetting('phone')
-  const hours = await getSetting('business_hours')
+  const [zalo, messenger, phone, hours, heroTitle, heroSubtitle] = await Promise.all([
+    getSetting('zalo_link'),
+    getSetting('messenger_link'),
+    getSetting('phone'),
+    getSetting('business_hours'),
+    getSetting('shop_hero_title'),
+    getSetting('shop_hero_subtitle'),
+  ])
 
   return (
     <>
       <Hero
-        title="Bó hoa đẹp cho bạn yêu thương"
-        subtitle="Nền hoa tươi nối liền yêu thương."
+        title={heroTitle || 'Bó hoa đẹp cho bạn yêu thương'}
+        subtitle={heroSubtitle || 'Những bó hoa được chọn lọc trong ngày'}
         eyebrow="Xem Online — Hoa gửi tận tay"
         bgImage={gallery[0]?.url ?? 'https://images.unsplash.com/photo-1457089297567-b252332be3cb?auto=format&fit=crop&w=1920&q=80'}
         bgAlt="Bó hoa tươi xanh"
-        ctaZalo={zalo ?? 'https://zalo.me/0905888123'}
-        ctaMessenger={messenger ?? 'https://m.me/cocobebe.vn'}
-        openHours={hours ?? 'Mở ca 07:30 - 21:00 mỗi ngày. Giao hoa nội thành nhanh.'}
+        ctaZalo={zalo || 'https://zalo.me/0905888123'}
+        ctaMessenger={messenger || 'https://m.me/cocobebe.vn'}
+        openHours={hours || 'Mở ca 07:30 - 21:00 mỗi ngày. Giao hoa nội thành nhanh.'}
       />
 
       {/* Bộ sưu tập nổi bật */}
@@ -119,14 +123,14 @@ export default async function HomePage() {
               <h3 className="text-lg font-[var(--font-display)] font-bold text-[var(--color-ink)]">Địa chỉ</h3>
               <p className="text-sm text-[var(--color-ink-light)]">123 Nguyễn Thị Định, Quận 7, TP. Hồ Chí Minh</p>
               <h3 className="text-lg font-[var(--font-display)] font-bold text-[var(--color-ink)]">Điện thoại</h3>
-              <p className="text-sm text-[var(--color-ink-light)]">{phone ?? '0905.888.123'}</p>
+              <p className="text-sm text-[var(--color-ink-light)]">{phone || '0905.888.123'}</p>
             </div>
             <div className="rounded-xl bg-[var(--color-primary)] p-8 text-center text-white">
               <h3 className="text-2xl font-[var(--font-display)] font-bold mb-3">Đặt hoa ngay</h3>
               <p className="text-white/92 mb-6 text-lg">Bất cứ lúc nào, online phục vụ tận nơi.</p>
               <div className="flex flex-wrap justify-center gap-3">
                 <a
-                  href={zalo ?? 'https://zalo.me/0905888123'}
+                  href={zalo || 'https://zalo.me/0905888123'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 min-h-[2.85rem] px-6 rounded-full bg-white text-[var(--color-primary)] hover:bg-white/90 font-semibold transition-colors"
@@ -134,7 +138,7 @@ export default async function HomePage() {
                   Zalo OA
                 </a>
                 <a
-                  href={messenger ?? 'https://m.me/cocobebe.vn'}
+                  href={messenger || 'https://m.me/cocobebe.vn'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 min-h-[2.85rem] px-6 rounded-full bg-white text-[var(--color-primary)] hover:bg-white/90 font-semibold transition-colors"

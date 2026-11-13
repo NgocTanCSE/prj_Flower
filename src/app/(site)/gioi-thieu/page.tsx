@@ -119,14 +119,14 @@ export default async function GioiThieuPage() {
             <div className="rounded-xl border border-[var(--color-border)] bg-white p-6 shadow-[var(--shadow-card)]">
               <h3 className="mb-4 text-lg font-[var(--font-display)] font-medium text-[var(--color-primary)]">Liên hệ</h3>
               <ul className="space-y-3 text-sm text-[var(--color-ink-light)]">
-                <li><strong>Điện thoại:</strong> {phone ?? '0905.888.123'}</li>
+                <li><strong>Điện thoại:</strong> {phone || '0905.888.123'}</li>
                 <li><strong>Địa chỉ:</strong> {address}</li>
                 <li><strong>Email:</strong> <a href="mailto:hello@cocobebe.vn" className="hover:text-[var(--color-primary)]">hello@cocobebe.vn</a></li>
               </ul>
             </div>
             <div className="rounded-xl border border-[var(--color-border)] bg-white p-6 shadow-[var(--shadow-card)]">
               <h3 className="mb-4 text-lg font-[var(--font-display)] font-medium text-[var(--color-primary)]">Giờ mở cửa</h3>
-              <p className="text-sm text-[var(--color-ink-light)]">{hours ?? 'Thứ Hai - Chủ Nhật: 08:00 - 21:00'}</p>
+              <p className="text-sm text-[var(--color-ink-light)]">{hours || 'Thứ Hai - Chủ Nhật: 08:00 - 21:00'}</p>
             </div>
           </div>
         </div>

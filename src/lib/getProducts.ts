@@ -169,7 +169,12 @@ async function client(): Promise<SupabaseClient | null> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
   if (!supabaseUrl) return null
 
-  return createClient()
+  // Premium: URL / key sai → trả về null (trang vẫn render, không crash)
+  try {
+    return createClient()
+  } catch {
+    return null
+  }
 }
 
 // ---------------------------------------------------------------------------

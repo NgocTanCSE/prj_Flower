@@ -135,5 +135,5 @@ INSERT INTO public.settings (key, value) VALUES
 -- ------------------
 -- AuditLog: 1 ban ghi chuan
 -- ------------------
-INSERT INTO public.audit_log (user_id, action, table, record_id, data, created_at) VALUES
+INSERT INTO public.audit_log (user_id, action, "table", record_id, data, created_at) VALUES
   (NULL, 'INSERT', 'settings', NULL, '{"keys": ["shop_name","about_text","phone","email","address","business_hours","zalo_link","messenger_link"]}'::jsonb, now());

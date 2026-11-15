@@ -1,3 +1,5 @@
+import path from 'node:path'
+
 /** @type {import('next').NextConfig} */
 export const nextConfig = {
   /** Build dưới dạng SSR (Node runtime) — tương thích với Server Actions / API routes. */
@@ -26,6 +28,12 @@ export const nextConfig = {
       },
     ],
   },
-};
+  /** Alias `@/` (default của Next) vào thư mục `src/` để webpack/thử tự giải quyết `tsconfig paths`. */
+  webpack(config) {
+    const srcDir = path.resolve(new URL('.', import.meta.url).pathname, 'src')
+    config.resolve.alias = { ...config.resolve.alias, '@': srcDir, '@/': srcDir }
+    return config
+  },
+}
 
-export default nextConfig;
+export default nextConfig

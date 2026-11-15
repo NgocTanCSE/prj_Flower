@@ -15,27 +15,6 @@
 BEGIN;
 
 -- ===========================================================================
--- 1. Ham tro giup
--- ===========================================================================
-
--- Tra ve true neu user dang dang nhap co role = 'admin'
-CREATE OR REPLACE FUNCTION public.is_admin()
-RETURNS boolean
-LANGUAGE sql
-SECURITY DEFINER
-STABLE
-SET search_path = public, pg_temp
-AS $function$
-  SELECT EXISTS (
-    SELECT 1 FROM public.profiles
-    WHERE id = auth.uid()
-      AND role = 'admin'
-  );
-$function$;
-
-COMMENT ON FUNCTION public.is_admin IS 'Ham bao mat: kiem tra role admin cua nguoi dung dang dang nhap.';
-
--- ===========================================================================
 -- 2. Doi tuong cap nhat updated_at tu dong
 -- ===========================================================================
 
@@ -179,13 +158,34 @@ CREATE TABLE public.audit_log (
   id bigserial PRIMARY KEY,
   user_id uuid NULL,
   action text NOT NULL,
-  table text NOT NULL,
+  "table" text NOT NULL,
   record_id bigint NULL,
   data jsonb NOT NULL DEFAULT '{}'::jsonb,
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
 COMMENT ON TABLE public.audit_log IS 'Nhật ky van hanh, chi admin moi doc/ghi duoc';
+
+-- ===========================================================================
+-- 1. Ham tro giup
+-- ===========================================================================
+
+-- Tra ve true neu user dang dang nhap co role = 'admin'
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+SET search_path = public, pg_temp
+AS $function$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid()
+      AND role = 'admin'
+  );
+$function$;
+
+COMMENT ON FUNCTION public.is_admin IS 'Ham bao mat: kiem tra role admin cua nguoi dung dang dang nhap.';
 
 -- ===========================================================================
 -- 4. Chi muc
@@ -202,7 +202,7 @@ CREATE INDEX gallery_active_idx ON public.gallery_images (is_active, sort_order)
 
 CREATE INDEX categories_active_idx ON public.categories (active, sort_order) WHERE active = true;
 
-CREATE INDEX audit_log_table_record_idx ON public.audit_log (table, record_id);
+CREATE INDEX audit_log_table_record_idx ON public.audit_log ("table", record_id);
 
 -- ===========================================================================
 -- 5. Trigger cap nhat updated_at
@@ -510,7 +510,7 @@ INSERT INTO public.settings (key, value) VALUES
 -- ------------------
 -- AuditLog: 1 ban ghi chuan
 -- ------------------
-INSERT INTO public.audit_log (user_id, action, table, record_id, data, created_at) VALUES
+INSERT INTO public.audit_log (user_id, action, "table", record_id, data, created_at) VALUES
   (NULL, 'INSERT', 'settings', NULL, '{"keys": ["shop_name","about_text","phone","email","address","business_hours","zalo_link","messenger_link"]}'::jsonb, now());
 
 COMMIT;

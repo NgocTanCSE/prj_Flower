@@ -70,7 +70,13 @@ export async function updateSettings(formData: FormData): Promise<void> {
   if (error) throw new Error(`Cập nhật cài đặt thất bại: ${error.message}`)
 
   await logAudit({ action: 'cai-dat-update', table: 'settings' })
+
+  // Làm tươi trang admin + các trang site (theme màu, thương hiệu, SEO...)
+  // đang đọc giá trị từ bảng `settings` ở Root Layout / Site Layout.
   revalidatePath('/admin/cai-dat')
+  for (const path of ['/bo-suu-tap', '/gioi-thieu', '/lien-he', '/search', '/']) {
+    revalidatePath(path)
+  }
 }
 
 /** Đọc một cài đặt duy nhất. */
@@ -89,6 +95,11 @@ export async function updateSetting(key: string, value: string): Promise<{ ok: b
   const { error } = await client.from('settings').upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' })
   if (error) throw new Error(`Cập nhật cài đặt thất bại: ${error.message}`)
   await logAudit({ action: 'cai-dat-update', table: 'settings', record_id: key })
+
+  // Làm tươi trang admin + các trang site đang đọc các cài đặt cần thiết.
   revalidatePath('/admin/cai-dat')
+  for (const path of ['/bo-suu-tap', '/gioi-thieu', '/lien-he', '/search', '/']) {
+    revalidatePath(path)
+  }
   return { ok: true }
 }

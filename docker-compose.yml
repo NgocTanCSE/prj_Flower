@@ -1,0 +1,82 @@
+# ---------------------------------------------------------------------------
+# Chạy dự án ứng dụng (Next.js 15 SSR) + Postgres (layer dữ liệu) + Adminer
+# ở chế độ production: `next start`, cổng 3000.
+#
+# App sẽ kết nối Supabase Cloud thông qua các biến trong `.env` (trên host):
+#   NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY.
+#
+# Postgres: chạy migration (0001 / 0002) gồm cả dữ liệu mẫu từ supabase/migrations
+# để developer inspect/debug data ở máy; cơ chế Auth + Storage của dự
+# án vẫn phục vụ qua Supabase Cloud.
+# ---------------------------------------------------------------------------
+version: "3.9"
+
+name: tiemhoa
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tiemhoa-app:latest
+    container_name: tiemhoa-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      # Alpine không có `curl`, dùng node (đã có trong image) để ping
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000/api/health', r => { process.exit(r.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))\""]
+      # thời gian request Ping có thể dài (đợi đáp ứng Supabase) → timeout 30s
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 60s
+    # Không lưu .next/node_modules xuống host, bảo vệ máy local.
+    volumes:
+      - app-node-modules:/app/node_modules
+      - app-next-cache:/app/.next
+
+  db:
+    image: postgres:15-alpine
+    container_name: tiemhoa-db
+    restart: unless-stopped
+    # host 5432 đã bị container khác (pg / fe-final) chiếm dùng -> dùng 5433
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: tiemhoa
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/01_init_db.sh:/docker-entrypoint-initdb.d/01_init_db.sh:ro
+      - ./supabase/migrations:/supabase_migrations:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tiemhoa"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+
+  adminer:
+    image: adminer:4.8.1
+    container_name: tiemhoa-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: flat
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres-data:
+  app-node-modules:
+  app-next-cache:

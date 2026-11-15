@@ -181,7 +181,7 @@ export async function getSettings(): Promise<Setting[]> {
   const supabase = await client()
   if (!supabase) return []
   const { data, error } = await supabase.from('settings').select('key, value').order('key')
-  if (error) throw new Error(`Lỗi lấy cài đặt: ${error.message}`)
+  if (error) return []
   return data ?? []
 }
 
@@ -190,7 +190,7 @@ export async function getSetting(key: string): Promise<string> {
   const supabase = await client()
   if (!supabase) return ''
   const { data, error } = await supabase.from('settings').select('value').eq('key', key).limit(1).single()
-  if (error) throw new Error(`Lỗi lấy cài đặt ${key}: ${error.message}`)
+  if (error) return ''
   return data?.value ?? ''
 }
 
@@ -223,7 +223,7 @@ export async function getCategories(): Promise<Category[]> {
     .order('sort_order')
     .limit(20)
 
-  if (error) throw new Error(`Lỗi lấy danh mục: ${error.message}`)
+  if (error) return []
   return data ?? []
 }
 
@@ -259,7 +259,7 @@ async function resolveCategory(category?: string): Promise<string | undefined> {
     .limit(1)
     .maybeSingle()
 
-  if (error) throw new Error(`Lỗi lấy danh mục: ${error.message}`)
+  if (error) return undefined
   if (data?.id) return String(data.id)
 
   // Nhận dạng id trực tiếp (số nguyên) làm phụ trợ.
@@ -311,7 +311,8 @@ export async function getProducts(params: ProductParams = {}): Promise<ProductLi
 
   const { data, error, count } = await query.range((page - 1) * perPage, page * perPage - 1)
 
-  if (error) throw new Error(`Lỗi lấy sản phẩm: ${error.message}`)
+  if (error)
+    return { items: [], total: 0, page, perPage, hasMore: false }
   const total = count ?? 0
   const pages = Math.max(1, Math.ceil(total / perPage))
 
@@ -338,7 +339,7 @@ export async function getFeaturedProducts(count = 5): Promise<Product[]> {
     .order('sort_order')
     .limit(count)
 
-  if (error) throw new Error(`Lỗi lấy sản phẩm nổi bật: ${error.message}`)
+  if (error) return []
   return (data ?? []).map((p) => ({
     ...p,
     product_images: (p.product_images ?? []).sort((a: ProductImage, b: ProductImage) => a.sort_order - b.sort_order),
@@ -358,7 +359,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     .limit(1)
     .single()
 
-  if (error) throw new Error(`Lỗi lấy sản phẩm ${slug}: ${error.message}`)
+  if (error) return null
   if (!data) return null
   return {
     ...data,
@@ -381,7 +382,7 @@ export async function getReviews(count = 6): Promise<Review[]> {
     .order('created_at', { ascending: false })
     .limit(count)
 
-  if (error) throw new Error(`Lỗi lấy đánh giá: ${error.message}`)
+  if (error) return []
   return data ?? []
 }
 
@@ -396,7 +397,7 @@ export async function getProductReviews(productId: number): Promise<Review[]> {
     .eq('is_approved', true)
     .order('created_at', { ascending: true })
 
-  if (error) throw new Error(`Lỗi lấy đánh giá: ${error.message}`)
+  if (error) return []
   return data ?? []
 }
 
@@ -411,7 +412,7 @@ export async function getGalleryImages(category?: string): Promise<GalleryImage[
   let query = supabase.from('gallery_images').select('*').order('sort_order')
   if (category) query = query.eq('category', category)
   const { data, error } = await query
-  if (error) throw new Error(`Lỗi lấy ảnh gallery: ${error.message}`)
+  if (error) return []
   return data ?? []
 }
 

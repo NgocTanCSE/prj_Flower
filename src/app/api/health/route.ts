@@ -20,10 +20,17 @@ export async function GET() {
     )
   }
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  let supabase = null
+  try {
+    supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  } catch (error) {
+    status = 'down'
+    errors.push(`client: ${(error as Error).message}`)
+  }
 
   // 1. Kiểm tra trạng thái DB.
   try {
+    if (!supabase) throw new Error('Supabase client rỗng (thừa Sofia).')
     const { error } = await supabase.from('products').select('id').limit(1)
     if (error) {
       status = 'degraded'
@@ -36,7 +43,7 @@ export async function GET() {
 
   // 2. Kiểm tra trạng thái Storage.
   try {
-    const { data } = await supabase.storage.from('assets').getPublicUrl('does-not-exist.webp')
+    const { data } = await supabase!.storage.from('assets').getPublicUrl('does-not-exist.webp')
     if (!data?.publicUrl) {
       status = 'degraded'
       errors.push('storage: không có publicUrl')

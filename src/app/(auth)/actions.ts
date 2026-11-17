@@ -7,7 +7,7 @@ import { parseLogin } from './schema'
 import { getProfile, isAdmin, logoutUser, sendResetLink, ssrAuthClient } from '@/lib/supabase/server'
 
 // Email admin cố định (cấu hình trong Supabase Auth)
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@tiemhoacobecube.dev'
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@tiemhoashopflower.dev'
 
 // ---------------------------------------------------------------------------
 // Kết quả trả về cho Client Component (form state).

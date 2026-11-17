@@ -6,8 +6,8 @@ import { SectionTitle } from '@/components/site/SectionTitle'
 import { getSetting } from '@/lib/getProducts'
 
 export const metadata = {
-  title: 'Liên hệ | CoBeCuBe - Hoa tươi',
-  description: 'Liên hệ đặt hoa - Tiệm Hoa CoBeCuBe. Hoa tươi, hoa cưới, quà tặng giao nhanh.',
+  title: 'Liên hệ | Shop Flower - Hoa tươi',
+  description: 'Liên hệ đặt hoa - Tiệm Hoa Shop Flower. Hoa tươi, hoa cưới, quà tặng giao nhanh.',
 }
 
 export default async function LienHePage() {
@@ -42,7 +42,7 @@ export default async function LienHePage() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer"
-                title="Bản đồ tiệm hoa CoBeCuBe"
+                title="Bản đồ tiệm hoa Shop Flower"
                 className="w-full h-full min-h-[320px] sm:min-h-[400px]"
               />
             </div>
@@ -66,8 +66,8 @@ export default async function LienHePage() {
                   </p>
                   <p>
                     <span className="font-medium text-[var(--color-ink)]">Email:</span>{' '}
-                    <a href={`mailto:${email || 'hello@cocobebe.vn'}`} className="hover:text-[var(--color-primary)]">
-                      {email || 'hello@cocobebe.vn'}
+                    <a href={`mailto:${email || 'hello@shopflower.vn'}`} className="hover:text-[var(--color-primary)]">
+                      {email || 'hello@shopflower.vn'}
                     </a>
                   </p>
                   <p>
@@ -93,7 +93,7 @@ export default async function LienHePage() {
                     Zalo OA
                   </a>
                   <a
-                    href={messengerLink || 'https://m.me/cocobebe.vn'}
+                    href={messengerLink || 'https://m.me/shopflower.vn'}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-secondary flex-1 rounded-full"
@@ -108,7 +108,7 @@ export default async function LienHePage() {
                   Kết nối chúng tôi
                 </h2>
                 <div className="mt-4 flex justify-center gap-4">
-                  {[facebookLink || 'https://facebook.com/cocobebe.vn', instagramLink || 'https://instagram.com/cocobebe.vn'].map(
+                  {[facebookLink || 'https://facebook.com/shopflower.vn', instagramLink || 'https://instagram.com/shopflower.vn'].map(
                     (href, i) => (
                       <a key={i} href={href} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[var(--color-tag-bg)] flex items-center justify-center text-[var(--color-primary)] font-bold hover:bg-[var(--color-primary)] hover:text-white transition-colors">
                         {i === 0 ? 'F' : 'I'}

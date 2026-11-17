@@ -9,7 +9,7 @@ import { Cards } from '@/components/site/Cards'
 import { getCategories, getProducts, formatCount, type ProductSort } from '@/lib/getProducts'
 
 export const metadata = {
-  title: 'Bộ sưu tập | CoBeCuBe - Hoa tươi',
+  title: 'Bộ sưu tập | Shop Flower - Hoa tươi',
   description: 'Xem tất cả bó hoa: hồng, tulip, lan, hướng dương... Đặt hoa online.',
 }
 

@@ -10,8 +10,8 @@ import { Cards } from '@/components/site/Cards'
 import { getCategories, getGalleryImages, getSetting, type Category } from '@/lib/getProducts'
 
 export const metadata = {
-  title: 'Giới thiệu | CoBeCuBe - Hoa tươi',
-  description: 'Giới thiệu Tiệm Hoa CoBeCuBe — chuyên hoa tươi, hoa cưới, quà tặng giao hàng nhanh.',
+  title: 'Giới thiệu | Shop Flower - Hoa tươi',
+  description: 'Giới thiệu Tiệm Hoa Shop Flower — chuyên hoa tươi, hoa cưới, quà tặng giao hàng nhanh.',
 }
 
 const CATEGORY_ICONS: Record<string, string> = {
@@ -38,7 +38,7 @@ export default async function GioiThieuPage() {
       {/* Hero nhỏ: giới thiệu shop */}
       <section className="section bg-[var(--color-tag-bg)]">
         <div className="container max-w-4xl text-center">
-          <h1 className="mb-6 text-4xl text-[var(--color-ink)]">Giới thiệu Tiệm Hoa CoBeCuBe</h1>
+          <h1 className="mb-6 text-4xl text-[var(--color-ink)]">Giới thiệu Tiệm Hoa Shop Flower</h1>
           <div className="text-sm leading-relaxed text-[var(--color-ink-light)]">
             {about.split('.').filter(Boolean).map((sentence, i) => (
               <p key={i} className="mb-3">
@@ -121,7 +121,7 @@ export default async function GioiThieuPage() {
               <ul className="space-y-3 text-sm text-[var(--color-ink-light)]">
                 <li><strong>Điện thoại:</strong> {phone || '0905.888.123'}</li>
                 <li><strong>Địa chỉ:</strong> {address}</li>
-                <li><strong>Email:</strong> <a href="mailto:hello@cocobebe.vn" className="hover:text-[var(--color-primary)]">hello@cocobebe.vn</a></li>
+                <li><strong>Email:</strong> <a href="mailto:hello@shopflower.vn" className="hover:text-[var(--color-primary)]">hello@shopflower.vn</a></li>
               </ul>
             </div>
             <div className="rounded-xl border border-[var(--color-border)] bg-white p-6 shadow-[var(--shadow-card)]">

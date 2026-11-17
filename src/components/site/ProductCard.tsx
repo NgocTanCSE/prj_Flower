@@ -55,7 +55,7 @@ export function ProductCard({ product, showBadge = true }: ProductCardProps) {
           )}
         </div>
         <a
-          href={`https://zalo.me/0905888123?text=${encodeURIComponent(`Xin chào Tiệm Hoa CoBeCuBe, mình muốn đặt mẫu ${product.name}.`)}`}
+          href={`https://zalo.me/0905888123?text=${encodeURIComponent(`Xin chào Tiệm Hoa Shop Flower, mình muốn đặt mẫu ${product.name}.`)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn-primary border-0"

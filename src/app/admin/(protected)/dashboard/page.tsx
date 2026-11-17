@@ -5,7 +5,7 @@ import { Loader } from '@/components/admin/Loader'
 
 export const metadata = {
   title: 'Tổng quan | Quản trị',
-  description: 'Tổng quan cửa hàng Tiệm Hoa CoBeCuBe.',
+  description: 'Tổng quan cửa hàng Tiệm Hoa Shop Flower.',
 }
 
 export default async function DashboardPage() {

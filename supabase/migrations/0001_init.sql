@@ -1,6 +1,6 @@
 -- ---------------------------------------------------------------------------
 -- 0001_init.sql
--- Schema co so du lieu Tiệm Hoa CoBeCuBe (Next.js + Supabase)
+-- Schema co so du lieu Tiệm Hoa Shop Flower (Next.js + Supabase)
 --
 -- Qui tac:
 --   - RLS bat tren moi bang, mac dinh DENY.
@@ -446,22 +446,22 @@ INSERT INTO public.products (id, slug, name, short_desc, description, price, old
 -- ProductImages: 2 anh moi san pham (1 chinh)
 -- ------------------
 INSERT INTO public.product_images (id, product_id, url, alt, sort_order, is_primary) VALUES
-  (1,  1, 'https://cocobebe.vn/products/hoa-1-main.jpg', 'Bouquet Hoa Hồng Đỏ',  1, true),
-  (2,  1, 'https://cocobebe.vn/products/hoa-1-alt.jpg', 'Bouquet Hoa Hồng Đỏ goc khac', 2, false),
-  (3,  2, 'https://cocobebe.vn/products/hoa-2-main.jpg', 'Bouquet Sinh Nhật',  1, true),
-  (4,  2, 'https://cocobebe.vn/products/hoa-2-alt.jpg', 'Bouquet Sinh Nhật chi tiet', 2, false),
-  (5,  3, 'https://cocobebe.vn/products/hoa-3-main.jpg', 'Bouquet Hoa Tulip',  1, true),
-  (6,  3, 'https://cocobebe.vn/products/hoa-3-alt.jpg', 'Hoa Tulip Da Lat', 2, false),
-  (7,  4, 'https://cocobebe.vn/products/hoa-4-main.jpg', 'Hoa Lan Vạn Thọ',  1, true),
-  (8,  4, 'https://cocobebe.vn/products/hoa-4-alt.jpg', 'Hoa Lan chi tiet', 2, false),
-  (9,  5, 'https://cocobebe.vn/products/hoa-5-main.jpg', 'Hoa Cưới Trắng',  1, true),
-  (10, 5, 'https://cocobebe.vn/products/hoa-5-alt.jpg', 'Hoa Cưới Trắng ngoai troi', 2, false),
-  (11, 6, 'https://cocobebe.vn/products/hoa-6-main.jpg', 'Bouquet Hướng Dương', 1, true),
-  (12, 6, 'https://cocobebe.vn/products/hoa-6-alt.jpg', 'Hương Dương ben cua so', 2, false),
-  (13, 7, 'https://cocobebe.vn/products/hoa-7-main.jpg', 'Hoa Lan Điều',  1, true),
-  (14, 7, 'https://cocobebe.vn/products/hoa-7-alt.jpg', 'Hoa Lan Điều ban phong khach', 2, false),
-  (15, 8, 'https://cocobebe.vn/products/hoa-8-main.jpg', 'Gói Quà Tặng', 1, true),
-  (16, 8, 'https://cocobebe.vn/products/hoa-8-alt.jpg', 'Gói Quà Tặng banh', 2, false);
+  (1,  1, 'https://shopflower.vn/products/hoa-1-main.jpg', 'Bouquet Hoa Hồng Đỏ',  1, true),
+  (2,  1, 'https://shopflower.vn/products/hoa-1-alt.jpg', 'Bouquet Hoa Hồng Đỏ goc khac', 2, false),
+  (3,  2, 'https://shopflower.vn/products/hoa-2-main.jpg', 'Bouquet Sinh Nhật',  1, true),
+  (4,  2, 'https://shopflower.vn/products/hoa-2-alt.jpg', 'Bouquet Sinh Nhật chi tiet', 2, false),
+  (5,  3, 'https://shopflower.vn/products/hoa-3-main.jpg', 'Bouquet Hoa Tulip',  1, true),
+  (6,  3, 'https://shopflower.vn/products/hoa-3-alt.jpg', 'Hoa Tulip Da Lat', 2, false),
+  (7,  4, 'https://shopflower.vn/products/hoa-4-main.jpg', 'Hoa Lan Vạn Thọ',  1, true),
+  (8,  4, 'https://shopflower.vn/products/hoa-4-alt.jpg', 'Hoa Lan chi tiet', 2, false),
+  (9,  5, 'https://shopflower.vn/products/hoa-5-main.jpg', 'Hoa Cưới Trắng',  1, true),
+  (10, 5, 'https://shopflower.vn/products/hoa-5-alt.jpg', 'Hoa Cưới Trắng ngoai troi', 2, false),
+  (11, 6, 'https://shopflower.vn/products/hoa-6-main.jpg', 'Bouquet Hướng Dương', 1, true),
+  (12, 6, 'https://shopflower.vn/products/hoa-6-alt.jpg', 'Hương Dương ben cua so', 2, false),
+  (13, 7, 'https://shopflower.vn/products/hoa-7-main.jpg', 'Hoa Lan Điều',  1, true),
+  (14, 7, 'https://shopflower.vn/products/hoa-7-alt.jpg', 'Hoa Lan Điều ban phong khach', 2, false),
+  (15, 8, 'https://shopflower.vn/products/hoa-8-main.jpg', 'Gói Quà Tặng', 1, true),
+  (16, 8, 'https://shopflower.vn/products/hoa-8-alt.jpg', 'Gói Quà Tặng banh', 2, false);
 
 -- ------------------
 -- Reviews: 4 binh luan, 3 phe duyet + 1 cho kiem
@@ -476,26 +476,26 @@ INSERT INTO public.reviews (id, product_id, customer_name, customer_email, ratin
 -- GalleryImages: 5 anh
 -- ------------------
 INSERT INTO public.gallery_images (id, url, alt, category, sort_order, is_active) VALUES
-  (1, 'https://cocobebe.vn/gallery/shop-main.jpg', 'Tiệm Hoa CoBeCuBe truoc cua', 'shop', 1, true),
-  (2, 'https://cocobebe.vn/gallery/bouquet-main.jpg', 'Bouquet hoa quan sinh nhat', 'bouquet', 2, true),
-  (3, 'https://cocobebe.vn/gallery/wedding-main.jpg', 'Tan mat cuoi hoa trang', 'wedding', 3, true),
-  (4, 'https://cocobebe.vn/gallery/decro-main.jpg', 'Ha Trang tri phong khach', 'decor', 4, true),
-  (5, 'https://cocobebe.vn/gallery/delivery-main.jpg', 'Nhan vien giao hoa', 'delivery', 5, true);
+  (1, 'https://shopflower.vn/gallery/shop-main.jpg', 'Tiệm Hoa Shop Flower truoc cua', 'shop', 1, true),
+  (2, 'https://shopflower.vn/gallery/bouquet-main.jpg', 'Bouquet hoa quan sinh nhat', 'bouquet', 2, true),
+  (3, 'https://shopflower.vn/gallery/wedding-main.jpg', 'Tan mat cuoi hoa trang', 'wedding', 3, true),
+  (4, 'https://shopflower.vn/gallery/decro-main.jpg', 'Ha Trang tri phong khach', 'decor', 4, true),
+  (5, 'https://shopflower.vn/gallery/delivery-main.jpg', 'Nhan vien giao hoa', 'delivery', 5, true);
 
 -- ------------------
 -- Settings: 20 cau hinh mac dinh
 -- ------------------
 INSERT INTO public.settings (key, value) VALUES
-  ('shop_name',           'Tiệm Hoa CoBeCuBe'),
-  ('about_text',          'Tiệm Hoa CoBeCuBe chuyen cap phat cac loai hoa tuoi, hoa cuoi, hoa sinh nhat va qua tang. Dat hoa giao nhanh trong ngay, phuc vu tai tung khu vuc. Ten ban ve loai hoa dep, thich hop cho moi nguoi.'),
+  ('shop_name',           'Tiệm Hoa Shop Flower'),
+  ('about_text',          'Tiệm Hoa Shop Flower chuyen cap phat cac loai hoa tuoi, hoa cuoi, hoa sinh nhat va qua tang. Dat hoa giao nhanh trong ngay, phuc vu tai tung khu vuc. Ten ban ve loai hoa dep, thich hop cho moi nguoi.'),
   ('phone',               '0905.888.123'),
-  ('email',               'hello@cocobebe.vn'),
+  ('email',               'hello@shopflower.vn'),
   ('address',             '123 Ngậuyen Thi Dinh, Phuong Ngậuyen Canh Binh, Quan 7, TP. Ho Chi Minh'),
   ('business_hours',      'Thu Hai - Chu Nhật: 08:00 - 21:00'),
   ('zalo_link',           'https://zalo.me/0905888123'),
-  ('messenger_link',      'https://m.me/cocobebe.vn'),
-  ('facebook_link',       'https://facebook.com/cocobebe.vn'),
-  ('instagram_link',      'https://instagram.com/cocobebe.vn'),
+  ('messenger_link',      'https://m.me/shopflower.vn'),
+  ('facebook_link',       'https://facebook.com/shopflower.vn'),
+  ('instagram_link',      'https://instagram.com/shopflower.vn'),
   ('allow_orders',        'true'),
   ('currency',            'VND'),
   ('language',            'vi'),
@@ -504,7 +504,7 @@ INSERT INTO public.settings (key, value) VALUES
   ('tax_rate',            '0'),
   ('cancel_policy',       'Khong hoan tien neu da dat hang. Đặt lai 1 giu truoc khi giao de huy.'),
   ('delivery_note',       'Giao hang toan thanh pho. Vui long kiem tra hoa truoc khi nhan.'),
-  ('seo_meta_title',      'Tiệm Hoa CoBeCuBe - Hoa tuoi tron niem vui'),
+  ('seo_meta_title',      'Tiệm Hoa Shop Flower - Hoa tuoi tron niem vui'),
   ('seo_meta_description','Chuyen ban hoa tuoi, hoa cuoi, hoa sinh nhat, hoa qua tang giao hang nhanh tai TP. Ho Chi Minh.');
 
 -- ------------------

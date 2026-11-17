@@ -23,11 +23,11 @@ import {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const product = await getProductBySlug(slug)
-  if (!product) return { title: 'Không tìm thấy | CoBeCuBe', description: 'Sản phẩm không tồn tại' }
+  if (!product) return { title: 'Không tìm thấy | Shop Flower', description: 'Sản phẩm không tồn tại' }
   const images = product.product_images ?? []
   return {
-    title: `${product.name} | CoBeCuBe - Hoa tươi`,
-    description: product.short_desc || product.description || `Mua ${product.name} giá ${formatPrice(product.price)} tại CoBeCuBe.`,
+    title: `${product.name} | Shop Flower - Hoa tươi`,
+    description: product.short_desc || product.description || `Mua ${product.name} giá ${formatPrice(product.price)} tại Shop Flower.`,
     openGraph: {
       title: product.name,
       description: product.short_desc,
@@ -172,7 +172,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 Đặt hoa qua Zalo
               </a>
               <a
-                href="https://m.me/cocobebe.vn"
+                href="https://m.me/shopflower.vn"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-secondary flex-1 rounded-full"
@@ -226,6 +226,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 }
 
 function orderUrl(name: string): string {
-  const msg = `Xin chào Tiệm Hoa CoBeCuBe, mình muốn đặt mẫu ${name}.`
+  const msg = `Xin chào Tiệm Hoa Shop Flower, mình muốn đặt mẫu ${name}.`
   return `https://zalo.me/0905888123?text=${encodeURIComponent(msg)}`
 }

@@ -26,7 +26,7 @@ export function AdminSidebar({ items, active }: AdminSidebarProps) {
       <div className="p-6 pb-4">
         <Link href="/admin/dashboard" className="block">
           <h2 className="text-2xl font-bold text-[#8b5f65] tracking-tight">Quản trị</h2>
-          <p className="text-xs text-[#5b5b5b]">Tiệm Hoa CoBeCuBe</p>
+          <p className="text-xs text-[#5b5b5b]">Tiệm Hoa Shop Flower</p>
         </Link>
       </div>
       <nav className="flex-1 px-4">

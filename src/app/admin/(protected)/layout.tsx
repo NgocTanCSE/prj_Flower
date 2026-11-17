@@ -26,7 +26,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
           <div className="flex items-center gap-6">
             <Link href="/admin/dashboard" className="text-lg font-bold text-[#8b5f65]">
-              CoBeCuBe Admin
+              Shop Flower Admin
             </Link>
             <nav className="hidden sm:flex">
               {NAV.filter((n) => !n.future).map((n) => (

@@ -26,7 +26,7 @@ export async function Footer() {
       setting('instagram_link'),
     ])
 
-  const brand = shopName || 'CoBeCuBe'
+  const brand = shopName || 'Shop Flower'
   const nav = [
     { label: 'Trang chủ', href: '/' },
     { label: 'Bộ sưu tập', href: '/bo-suu-tap' },
@@ -102,7 +102,7 @@ export async function Footer() {
               {shopAddress !== '' ? shopAddress : '123 Nguyễn Thị Định, Phường Nguyễn Cư Trinh, Quận 1, TP. Hồ Chí Minh'}
             </p>
             <p className="text-sm text-white/70">
-              {shopEmail !== '' ? shopEmail : 'hello@cocobebe.vn'}
+              {shopEmail !== '' ? shopEmail : 'hello@shopflower.vn'}
             </p>
           </div>
         </div>

@@ -16,7 +16,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
           </Link>
         </div>
         <div className="mt-8">
-          <a href="mailto:lienhe@tiemhoacobecube.com" className="text-sm text-[#999] hover:text-[#8b5f65]">
+          <a href="mailto:lienhe@tiemhoashopflower.com" className="text-sm text-[#999] hover:text-[#8b5f65]">
             Liên hệ hỗ trợ
           </a>
         </div>

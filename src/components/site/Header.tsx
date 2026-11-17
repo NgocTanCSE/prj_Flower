@@ -13,7 +13,7 @@ interface HeaderProps {
 export function Header({ shopName, logoUrl, ctaZalo }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const shop = shopName || 'CoBeCuBe'
+  const shop = shopName || 'Shop Flower'
 
   const ZaloMessage = `Xin chào ${shop}, mình muốn đặt hoa.`
   const zalo = ctaZalo !== undefined ? ctaZalo : `https://zalo.me/0901234567?text=${encodeURIComponent(ZaloMessage)}`

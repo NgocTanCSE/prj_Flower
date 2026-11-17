@@ -29,14 +29,14 @@ export function Hero({
     'ch\u00e0o',
     'Ti\u1ec7m',
     'Hoa',
-    'CoBeCuBe,',
+    'Shop Flower,',
     'm\u00ecnh',
     'mu\u1ed1n',
     '\u0111\u1eb5t',
     'hoa.',
   ].join(' ');
   if (ctaZalo === undefined) ctaZalo = 'https://zalo.me/0901234567?text=' + encodeURIComponent(ORDER_MSG);
-  if (ctaMessenger === undefined) ctaMessenger = 'https://m.me/tiemhoacobecube?text=' + encodeURIComponent(ORDER_MSG);
+  if (ctaMessenger === undefined) ctaMessenger = 'https://m.me/tiemhoashopflower?text=' + encodeURIComponent(ORDER_MSG);
   if (subtitle === undefined) subtitle = 'Nhung bo hoa duoc chon lua trong ngay, goi gem tinh te va giao tan tay.';
   if (openHours === undefined) openHours = 'Mo ca 07:30 - 21:00 moi ngay. Giao hoa noi thanh nhanh.';
 

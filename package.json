@@ -1,9 +1,9 @@
 {
-  "name": "tiemhoa-cobecube",
+  "name": "tiemhoa-shopflower",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Tiệm Hoa CoBeCuBe - Next.js (App Router, SSR) + Supabase (Auth, DB, Storage) + Netlify",
+  "description": "Tiệm Hoa Shop Flower - Next.js (App Router, SSR) + Supabase (Auth, DB, Storage) + Netlify",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

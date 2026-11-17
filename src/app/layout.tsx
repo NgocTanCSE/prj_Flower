@@ -27,13 +27,13 @@ async function getSettingsSafe(): Promise<Setting[]> {
   }
 }
 
-const FALLBACK_TITLE = 'Tiệm Hoa CoBeCuBe - Hoa tươi trọn niềm vui'
+const FALLBACK_TITLE = 'Tiệm Hoa Shop Flower - Hoa tươi trọn niềm vui'
 const FALLBACK_DESC = 'Chuyên bán hoa tươi, hoa cưới, hoa sinh nhật, quà tặng giao hàng nhanh tại TP. Hồ Chí Minh.'
 
 /** Tiêu đề / mô tả / tab theo thông tin shop website. */
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettingsSafe()
-  const shopName = setting(settings, 'shop_name') || 'Tiệm Hoa CoBeCuBe'
+  const shopName = setting(settings, 'shop_name') || 'Tiệm Hoa Shop Flower'
 
   return {
     title: {

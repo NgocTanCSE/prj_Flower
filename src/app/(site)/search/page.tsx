@@ -10,7 +10,7 @@ import { getCategories, getProducts, formatCount } from '@/lib/getProducts'
 import type { ProductSort } from '@/lib/getProducts'
 
 export const metadata = {
-  title: 'Tìm kiếm hoa | CoBeCuBe',
+  title: 'Tìm kiếm hoa | Shop Flower',
   description: 'Tìm kiếm bó hoa yêu thích: hồng, tulip, lan, hướng dương...',
 }
 

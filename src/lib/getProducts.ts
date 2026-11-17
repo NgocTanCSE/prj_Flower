@@ -1,5 +1,5 @@
 /**
- * Truy vấn dữ liệu công khai của Tiệm Hoa CoBeCuBe.
+ * Truy vấn dữ liệu công khai của Tiệm Hoa Shop Flower.
  *
  * SSR: gọi từ server component / server action, Supabase RLS cho phép
  * ngoại khóa đọc các dữ liệu công khai:

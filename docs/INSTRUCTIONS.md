@@ -2,7 +2,7 @@
 @TailwindCSS
 @Next 15 App Router
 
-Tiệm Hoa CoBeCuBe
+Tiệm Hoa Shop Flower
 =================
 
 Kiến trúc A - **SSR qua Supabase (hầu hết logic nằm ở RLS & Supabase Client).**

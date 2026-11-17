@@ -28,7 +28,7 @@ async function setting(key: string): Promise<string> {
 const FALLBACK_DESC = 'Chuyên bán hoa tươi, hoa cưới, hoa sinh nhật, quà tặng giao hàng nhanh tại TP. Hồ Chí Minh.'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const shopName = (await setting('shop_name')) || 'Tiệm Hoa CoBeCuBe'
+  const shopName = (await setting('shop_name')) || 'Tiệm Hoa Shop Flower'
   return {
     title: {
       default: `${shopName} - Hoa tươi trọn niềm vui`,
@@ -39,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SiteLayout({ children }: { children: ReactNode }) {
-  const shopName = (await setting('shop_name')) || 'Tiệm Hoa CoBeCuBe'
+  const shopName = (await setting('shop_name')) || 'Tiệm Hoa Shop Flower'
   const logoUrl = (await setting('shop_logo_url')) || ''
 
   return (

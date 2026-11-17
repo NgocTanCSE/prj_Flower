@@ -1,4 +1,4 @@
-# Cơ sở dữ liệu Tiệm Hoa CoBeCuBe
+# Cơ sở dữ liệu Tiệm Hoa Shop Flower
 
 > Tài liệu kỹ thuật cho Next.js + Supabase, RLS xác định quyền truy cập.
 >

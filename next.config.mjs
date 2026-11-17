@@ -29,7 +29,7 @@ export const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'images.tiemhoacobecube.com',
+        hostname: 'images.tiemhoashopflower.com',
       },
     ],
   },

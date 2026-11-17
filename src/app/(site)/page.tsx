@@ -12,8 +12,8 @@ import { ProductCard } from '@/components/site/ProductCard'
 import { getFeaturedProducts, getGalleryImages, getReviews, getSetting } from '@/lib/getProducts'
 
 export const metadata = {
-  title: 'Trang chủ | CoBeCuBe - Hoa tươi trọn niềm vui',
-  description: 'Tiệm Hoa CoBeCuBe - hoa tươi, hoa cưới, quà tặng giao nhanh tại TP. Hồ Chí Minh.',
+  title: 'Trang chủ | Shop Flower - Hoa tươi trọn niềm vui',
+  description: 'Tiệm Hoa Shop Flower - hoa tươi, hoa cưới, quà tặng giao nhanh tại TP. Hồ Chí Minh.',
 }
 
 const ABOUT_BLOCKS = [
@@ -56,7 +56,7 @@ export default async function HomePage() {
         bgImage={gallery[0]?.url ?? 'https://images.unsplash.com/photo-1457089297567-b252332be3cb?auto=format&fit=crop&w=1920&q=80'}
         bgAlt="Bó hoa tươi xanh"
         ctaZalo={zalo || 'https://zalo.me/0905888123'}
-        ctaMessenger={messenger || 'https://m.me/cocobebe.vn'}
+        ctaMessenger={messenger || 'https://m.me/shopflower.vn'}
         openHours={hours || 'Mở ca 07:30 - 21:00 mỗi ngày. Giao hoa nội thành nhanh.'}
       />
 
@@ -91,7 +91,7 @@ export default async function HomePage() {
         <div className="container">
           <SectionTitle
             label="Giới thiệu"
-            title="VÌ SAO CHỌN COBECUBE"
+            title="VÌ SAO CHỌN SHOPFLOWER"
             subtitle="Làm hoa từ sơ sở yêu thương, giao hoa nhanh như gió."
             align="center"
           />
@@ -138,7 +138,7 @@ export default async function HomePage() {
                   Zalo OA
                 </a>
                 <a
-                  href={messenger || 'https://m.me/cocobebe.vn'}
+                  href={messenger || 'https://m.me/shopflower.vn'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 min-h-[2.85rem] px-6 rounded-full bg-white text-[var(--color-primary)] hover:bg-white/90 font-semibold transition-colors"

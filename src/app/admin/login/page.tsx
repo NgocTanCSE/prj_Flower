@@ -19,24 +19,10 @@ export default function AdminLogin() {
   return (
     <AuthShell
       title="Đăng nhập quản trị"
-      description="Chỉ dành cho quản trị viên. Vui lòng nhập email và mật khẩu."
+      description="Chỉ dành cho quản trị viên. Nhập mật khẩu để truy cập."
       footer={null}
     >
       <AuthForm submitLabel={pending ? 'Đang đăng nhập...' : 'Đăng nhập'}>
-        <label htmlFor="login-email" className="block text-sm font-medium text-[#5b5b5b]">
-          Email
-        </label>
-        <input
-          id="login-email"
-          name="email"
-          type="email"
-          placeholder="admin@tiemhoacobecube.dev"
-          required
-          autoComplete="email"
-          className="w-full rounded-xl border border-primary-300 px-4 py-3 text-sm text-wenge
-            placeholder:text-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
-        />
-
         <label htmlFor="login-password" className="block text-sm font-medium text-[#5b5b5b]">
           Mật khẩu
         </label>

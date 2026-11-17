@@ -98,8 +98,6 @@ const expected = [
   '/admin/cai-dat/page',
   '/admin/login/page',
   '/api/health/route',
-  '/(auth)/forgot-password/page',
-  '/(auth)/reset-password/page',
 ]
 const missing = expected.filter((r) => !routes.includes(r))
 log(hasManifest && missing.length === 0, 'Build output (`app-paths-manifest.json`)', hasManifest ? `${routes.length} routes, thiếu ${missing.length}` : 'chưa chạy `next build`')

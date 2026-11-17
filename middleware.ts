@@ -4,42 +4,28 @@ import { createClient } from '@/lib/supabase/server'
 
 // ---------------------------------------------------------------
 // HTTP(route) bảo vệ:
-//   - `/admin/*`       : chặn khi không có phiên (hoặc không phải admin).
-//   - `/admin/login`   : trang đăng nhập ẩn (không cần session).
-//   - `/auth*`         : map proposal của route group (auth) -> `/admin/login|/forgot-password|...`
+//   - `/admin/*`      : chặn khi không có phiên (hoặc không phải admin).
+//   - `/admin/login`  : trang đăng nhập ẩn (không cần session).
 // ---------------------------------------------------------------
 
-// Trang đăng nhập ẩn cho admin.
 const ADMIN_LOGIN = '/admin/login'
-const AUTH_DEFAULT = '/admin/login'
 
 export async function middleware(request: NextRequest) {
-  // Middleware không thể chạy khi Supabase chưa được cấu hình (không có biến
-  // môi trường); bỏ qua tất cả các bước trung gian để build giữ được ổn định.
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return NextResponse.next()
 
   const response = NextResponse.next()
-
   const { pathname } = request.nextUrl
 
-  // 1. Rewrite `/auth*` -> `/admin/login` hoặc `/forgot-password` (ẩn đường dẫn auth).
-  if (pathname.startsWith('/auth')) {
-    const rest = pathname.slice('/auth'.length)
-    const target = rest && rest !== '/' ? rest : AUTH_DEFAULT
-    return NextResponse.rewrite(target)
-  }
-
-  // 2. Cho phép truy cập `/admin/login` mà không cần session.
+  // 1. Cho phép truy cập `/admin/login` mà không cần session.
   if (pathname === ADMIN_LOGIN) {
     return response
   }
 
-  // 3. Admin: chặn `/admin/*` khi không có session (hoặc không phải admin).
+  // 2. Admin: chặn `/admin/*` khi không có session (hoặc không phải admin).
   if (pathname.startsWith('/admin')) {
     const supabase = await createClient(request, response)
 
     if (!supabase) {
-      // Supabase chưa cấu hình: bỏ qua không truy vấn.
       return response
     }
 
@@ -49,7 +35,6 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL(ADMIN_LOGIN, request.url))
     }
 
-    // Admin chỉ khi `profiles.role = 'admin'` (auth.users.id của session).
     const { data: profile } = await supabase.from('profiles').select('role').eq('id', session.user.id).single()
 
     if (!profile || profile.role !== 'admin') {
@@ -63,7 +48,6 @@ export async function middleware(request: NextRequest) {
   return response
 }
 
-// Chỉ theo dõi những đường dẫn cần bảo vệ / rewrite.
 export const config = {
-  matcher: ['/admin/:path*', '/auth/:path*'],
+  matcher: ['/admin/:path*'],
 }

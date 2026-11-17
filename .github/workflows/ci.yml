@@ -35,12 +35,6 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Validate (type-check + schema + build + legacy)
-        run: npm run validate
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-
       - name: Build Next.js (SSR + static)
         run: npm run build
         env:
@@ -48,14 +42,23 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           SITE_URL: ${{ vars.SITE_URL }}
 
+      - name: Validate (type-check + schema + build + legacy)
+        run: npm run validate
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
       - name: Start dev server
+        if: ${{ secrets.SUPABASE_URL != '' }}
         run: npm run start
         background: true
 
       - name: Kiểm tra thời gian chờ dev server
+        if: ${{ secrets.SUPABASE_URL != '' }}
         run: sleep 20
 
       - name: Chạy e2e
+        if: ${{ secrets.SUPABASE_URL != '' }}
         run: npx playwright test e2e/1_auth.spec.ts
         env:
           BASE_URL: http://localhost:3000

@@ -97,6 +97,8 @@ const expected = [
   '/admin/(protected)/thu-vien/page',
   '/admin/(protected)/cai-dat/page',
   '/admin/login/page',
+  '/(auth)/forgot-password/page',
+  '/reset-password/page',
   '/api/health/route',
 ]
 const missing = expected.filter((r) => !routes.includes(r))

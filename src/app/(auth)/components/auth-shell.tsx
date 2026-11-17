@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import type { ReactNode } from 'react'
+import { useFormStatus } from 'react-dom'
+import type { FormEvent, ReactNode } from 'react'
 
 // ---------------------------------------------------------------------------
 // Form điều khiển client-side (thêm data vào form).
@@ -10,22 +11,36 @@ import type { ReactNode } from 'react'
 interface AuthFormProps {
   /** Các điều khiển (input/textarea/select) của form. */
   children: ReactNode
-  /** Nút gửi form kể cả trạng thái pending. */
+  /** Nhãn nút gửi form. */
   submitLabel: string
+  /** Server Action nhận FormData. */
+  action?: (formData: FormData) => void | Promise<void>
+  /** Handler submit phía client (dùng cho form tự xử lý). */
+  onSubmit?: (event: FormEvent<HTMLFormElement>) => void
 }
 
-export function AuthForm({ children, submitLabel }: AuthFormProps) {
+/** Nút submit đọc trạng thái pending của form cha. */
+function SubmitButton({ label }: { label: string }) {
+  const { pending } = useFormStatus()
+
   return (
-    <form className="flex flex-col gap-5">
+    <button
+      type="submit"
+      disabled={pending}
+      className="w-full rounded-full bg-primary-600 px-6 py-3 text-sm font-semibold text-white
+        shadow-sm transition-colors hover:bg-primary-700 active:bg-primary-800
+        disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {pending ? 'Đang xử lý...' : label}
+    </button>
+  )
+}
+
+export function AuthForm({ children, submitLabel, action, onSubmit }: AuthFormProps) {
+  return (
+    <form className="flex flex-col gap-5" action={action} onSubmit={onSubmit}>
       <div className="flex flex-col gap-5">{children}</div>
-      <button
-        type="submit"
-        className="w-full rounded-full bg-primary-600 px-6 py-3 text-sm font-semibold text-white
-          shadow-sm transition-colors hover:bg-primary-700 active:bg-primary-800
-          disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {submitLabel}
-      </button>
+      <SubmitButton label={submitLabel} />
     </form>
   )
 }
@@ -52,9 +67,9 @@ export function AuthShell({ title, description, children, footer, backTo }: Auth
           {description && <p className="mt-2 text-sm text-[#5b5b5b]">{description}</p>}
         </div>
 
-        {children}
+        <div className="mt-6 flex flex-col gap-5">{children}</div>
 
-        {footer && <div className="mt-8 text-center text-sm">{footer}</div>}
+        {footer && <div className="mt-6 text-center text-sm">{footer}</div>}
         {backTo && (
           <div className="mt-6 flex justify-center text-sm">
             <Link href={backTo} className="text-primary-600 transition-colors hover:text-primary-700">

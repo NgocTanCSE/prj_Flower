@@ -49,17 +49,19 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Start dev server
-        if: ${{ secrets.SUPABASE_URL != '' }}
         run: npm run start
         background: true
 
       - name: Kiểm tra thời gian chờ dev server
-        if: ${{ secrets.SUPABASE_URL != '' }}
         run: sleep 20
 
       - name: Chạy e2e
-        if: ${{ secrets.SUPABASE_URL != '' }}
-        run: npx playwright test e2e/1_auth.spec.ts
+        run: |
+          if [ -z "$NEXT_PUBLIC_SUPABASE_URL" ]; then
+            echo "Bỏ qua e2e: chưa cấu hình SUPABASE_URL"
+            exit 0
+          fi
+          npx playwright test e2e/1_auth.spec.ts
         env:
           BASE_URL: http://localhost:3000
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}

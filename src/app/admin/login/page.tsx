@@ -1,8 +1,9 @@
 'use client'
 
-import { useFormState, useFormStatus } from 'react-dom'
+import { useFormState } from 'react-dom'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 import { login } from '@/app/(auth)/actions'
 import { AuthForm, AuthShell } from '@/app/(auth)/components/auth-shell'
@@ -10,7 +11,6 @@ import { AuthForm, AuthShell } from '@/app/(auth)/components/auth-shell'
 export default function AdminLogin() {
   const [state, formAction] = useFormState(login, { error: undefined, redirect: undefined })
   const router = useRouter()
-  const { pending } = useFormStatus()
 
   useEffect(() => {
     if (state?.redirect) router.replace(state.redirect)
@@ -20,9 +20,13 @@ export default function AdminLogin() {
     <AuthShell
       title="Đăng nhập quản trị"
       description="Chỉ dành cho quản trị viên. Nhập mật khẩu để truy cập."
-      footer={null}
+      footer={
+        <Link href="/forgot-password" className="text-primary-600 transition-colors hover:text-primary-700">
+          Quên mật khẩu?
+        </Link>
+      }
     >
-      <AuthForm submitLabel={pending ? 'Đang đăng nhập...' : 'Đăng nhập'}>
+      <AuthForm submitLabel="Đăng nhập" action={formAction}>
         <label htmlFor="login-password" className="block text-sm font-medium text-[#5b5b5b]">
           Mật khẩu
         </label>

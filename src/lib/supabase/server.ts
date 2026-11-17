@@ -179,19 +179,13 @@ export async function getSessionUser(): Promise<{ session: SupabaseSession; user
  * Thiết lập Email dùng cho quên mật khẩu (Supabase gửi magic link).
  * Trả về `{ error }` nếu gửi email thất bại.
  */
-export async function sendResetLink(email: string): Promise<{ error?: string }> {
+export async function sendResetLink(email: string, redirectTo: string): Promise<{ error?: string }> {
   const supabase = await ssrAuthClient()
   if (!supabase) {
     return { error: 'Không thể kết nối cơ sở dữ liệu.' }
   }
 
-  const { headers } = await import('next/headers')
-  const headersStore = await headers()
-  const origin = headersStore.get('origin') ?? (process.env.NEXT_PUBLIC_SITE_URL as string)
-  if (!origin) {
-    return { error: 'Không xác định được đường dẫn website.' }
-  }
-  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${origin}/auth/reset-password` })
+  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
   if (error) return { error: error.message }
   return {}
 }

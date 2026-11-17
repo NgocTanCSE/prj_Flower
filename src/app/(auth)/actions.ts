@@ -1,10 +1,10 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import type { SupabaseUser } from '@/lib/supabase/server'
+import { headers } from 'next/headers'
 
 import { parseLogin } from './schema'
-import { getProfile, isAdmin, logoutUser, ssrAuthClient } from '@/lib/supabase/server'
+import { getProfile, isAdmin, logoutUser, sendResetLink, ssrAuthClient } from '@/lib/supabase/server'
 
 // Email admin cố định (cấu hình trong Supabase Auth)
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@tiemhoacobecube.dev'
@@ -18,6 +18,7 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@tiemhoacobecube.dev'
 export interface ActionResult {
   error?: string
   redirect?: string
+  sent?: boolean
 }
 
 /** Đăng nhập chỉ với mật khẩu (email cố định). Chỉ cho role admin. */
@@ -43,6 +44,19 @@ export async function login(prevState: ActionResult, formData: FormData): Promis
   if (!isAdmin(profile)) return { error: 'Tài khoản này không có quyền quản trị.' }
 
   return { redirect: '/admin/dashboard' }
+}
+
+/** Gửi email đặt lại mật khẩu tới ADMIN_EMAIL (không cần nhập email). */
+export async function sendResetPassword(_prevState: ActionResult, _formData: FormData): Promise<ActionResult> {
+  const headerStore = await headers()
+  const host = headerStore.get('host')
+  const proto = headerStore.get('x-forwarded-proto') ?? 'https'
+  const origin = host ? `${proto}://${host}` : (process.env.SITE_URL ?? 'http://localhost:3000')
+
+  const { error } = await sendResetLink(ADMIN_EMAIL, `${origin}/reset-password`)
+  if (error) return { error: `Không gửi được email đặt lại mật khẩu: ${error}` }
+
+  return { sent: true }
 }
 
 /** Server action đăng xuất: xóa cookie `sb-session` của phiên. */

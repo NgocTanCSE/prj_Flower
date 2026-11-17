@@ -18,8 +18,8 @@ permissions:
   contents: read
 
 jobs:
-  build:
-    name: build
+  deploy:
+    name: Deploy → Netlify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +37,13 @@ jobs:
           fi
 
       - name: Lint
-        run: npx next lint
+        run: npm run lint
+
+      - name: Validate
+        run: npm run validate
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
       - name: Build Next.js
         run: npm run build
@@ -46,8 +52,8 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           SITE_URL: ${{ vars.SITE_URL }}
 
-      - name: Rapor lên Netlify
-        run: npx netlify deploy --prod
+      - name: Deploy → Netlify
+        run: npx netlify deploy --prod --dir=.next
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

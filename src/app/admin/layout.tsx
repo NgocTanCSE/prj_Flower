@@ -16,7 +16,7 @@ const NAV = [
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   // 1. Bảo vệ: session + role admin (kết hợp với middleware.ts).
   const user = await getSessionUser()
-  if (!user) redirect('/login')
+  if (!user) redirect('/admin/login')
   if (!(await isAdmin(user.profile))) redirect('/')
 
   return (

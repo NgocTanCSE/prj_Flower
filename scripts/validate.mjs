@@ -96,9 +96,8 @@ const expected = [
   '/admin/danh-gia/page',
   '/admin/thu-vien/page',
   '/admin/cai-dat/page',
+  '/admin/login/page',
   '/api/health/route',
-  '/(auth)/login/page',
-  '/(auth)/register/page',
   '/(auth)/forgot-password/page',
   '/(auth)/reset-password/page',
 ]

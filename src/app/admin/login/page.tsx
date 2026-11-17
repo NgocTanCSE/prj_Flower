@@ -4,34 +4,23 @@ import { useFormState, useFormStatus } from 'react-dom'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
-import { login } from '../actions'
-import { AuthForm, AuthShell } from '../components/auth-shell'
-import Link from 'next/link'
+import { login } from '@/app/(auth)/actions'
+import { AuthForm, AuthShell } from '@/app/(auth)/components/auth-shell'
 
-export default function Login() {
+export default function AdminLogin() {
   const [state, formAction] = useFormState(login, { error: undefined, redirect: undefined })
   const router = useRouter()
   const { pending } = useFormStatus()
 
-  // Thành công: supper quốc các quyền hạn -> điều hướng (cookie client-side đã được ghi).
   useEffect(() => {
     if (state?.redirect) router.replace(state.redirect)
   }, [state?.redirect, router])
 
   return (
     <AuthShell
-      title="Đăng nhập"
-      description="Vui lòng nhập email và mật khẩu tài khoản của bạn."
-      footer={
-        <div className="flex flex-col items-center gap-2 text-sm">
-          <Link href="/register" className="text-primary-600 transition-colors hover:text-primary-700">
-            Chưa có tài khoản? Đăng ký
-          </Link>
-          <Link href="/forgot-password" className="text-primary-600 transition-colors hover:text-primary-700">
-            Quên mật khẩu?
-          </Link>
-        </div>
-      }
+      title="Đăng nhập quản trị"
+      description="Chỉ dành cho quản trị viên. Vui lòng nhập email và mật khẩu."
+      footer={null}
     >
       <AuthForm submitLabel={pending ? 'Đang đăng nhập...' : 'Đăng nhập'}>
         <label htmlFor="login-email" className="block text-sm font-medium text-[#5b5b5b]">
@@ -41,7 +30,7 @@ export default function Login() {
           id="login-email"
           name="email"
           type="email"
-          placeholder="email@example.com"
+          placeholder="admin@tiemhoacobecube.dev"
           required
           autoComplete="email"
           className="w-full rounded-xl border border-primary-300 px-4 py-3 text-sm text-wenge

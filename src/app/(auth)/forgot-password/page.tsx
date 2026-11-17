@@ -24,7 +24,7 @@ export default function ForgotPassword() {
       footer={
         <p className="text-sm text-[#5b5b5b]">
           Nhớ mật khẩu?{' '}
-          <Link href="/login" className="text-primary-600 transition-colors hover:text-primary-700">
+          <Link href="/admin/login" className="text-primary-600 transition-colors hover:text-primary-700">
             Quay lại đăng nhập
           </Link>
         </p>

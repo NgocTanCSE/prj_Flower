@@ -41,7 +41,7 @@ function ResetPasswordForm() {
       footer={
         <p className="text-sm text-[#5b5b5b]">
           Quay lại đăng nhập?{' '}
-          <Link href="/login" className="text-primary-600 transition-colors hover:text-primary-700">
+          <Link href="/admin/login" className="text-primary-600 transition-colors hover:text-primary-700">
             Đăng nhập lại
           </Link>
         </p>

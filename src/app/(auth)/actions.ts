@@ -114,5 +114,5 @@ export async function resetPassword(prevState: ActionResult, formData: FormData)
   const { error } = await updatePassword(parsed.data.password, parsed.data.passwordConfirm)
   if (error) return { error }
 
-  return { redirect: '/login' }
+  return { redirect: '/admin/login' }
 }

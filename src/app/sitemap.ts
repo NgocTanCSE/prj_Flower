@@ -10,7 +10,7 @@ export const revalidate = 3600
  * Các trang tĩnh (`/`, `/bo-suu-tap`, `/gioi-thieu`, `/lien-he`) được hardcode.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.SITE_URL ?? 'https://tiemhoa-cobe-cube.pages.dev'
+  const siteUrl = process.env.SITE_URL ?? 'https://tiemhoashopflower.netlify.app'
 
   const urls: MetadataRoute.Sitemap = [
     {

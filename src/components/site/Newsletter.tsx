@@ -6,8 +6,11 @@ interface NewsletterProps {
 }
 
 export function Newsletter({ title, subtitle }: NewsletterProps) {
-  const titleT = title !== undefined ? title : 'Ch\u1ecdm m\u1edbi v\u1ee5 x\u1ebdi';
-  const subtitleT = subtitle !== undefined ? subtitle : 'H\u01a1n d\u1ea7u \u0111i\u1ec1n c\u1ebafn t\u01b0 ch\u00ednh. Nh\u1eefng ch\u1ecdm c\u1ef1c m\u1edbi ph\u1ee5c v\u1ee5. T\u1eeb c\u00e1c h\u00e0ng ph\u1ee5c ch\u1ecdt c\u1ea1n, m\u00ecnh mu\u1ed1n th\u00ea l\u1eddi h\u01a1n.';
+  const titleT = title !== undefined ? title : 'Đăng ký nhận tin mới';
+  const subtitleT =
+    subtitle !== undefined
+      ? subtitle
+      : 'Đăng ký email để nhận những bó hoa tươi và ưu đãi đặc biệt đầu tiên.';
 
   return (
     <section className="section bg-[var(--color-tag-bg)] py-12">
@@ -17,15 +20,15 @@ export function Newsletter({ title, subtitle }: NewsletterProps) {
         <div className="flex flex-col sm:flex-row gap-3 p-4 rounded-lg bg-white shadow-[var(--shadow-card)]">
           <input
             type="email"
-            placeholder="Email c\u1ee7a b\u1ea1n"
+            placeholder="Nhập email của bạn"
             className="flex-1 px-6 py-3 rounded-full border border-[var(--color-border)] bg-white text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-lighter)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
           />
           <button type="button" className="btn btn-primary px-8 rounded-full">
-            \u0110\u1eb7ng k\u00fd
+            Đăng ký
           </button>
         </div>
         <p className="text-sm text-[var(--color-ink-lighter)] mt-4">
-          B\u1eadt email m\u1edbi. N\u00ean l\u01ea5y l\u01eddi v\u01e8n t\u00een c\u1ee7a.
+          Chúng tôi sẽ gửi tin mới và ưu đãi đặc biệt tới email của bạn.
         </p>
       </div>
     </section>

@@ -37,8 +37,8 @@ export function Hero({
   ].join(' ');
   if (ctaZalo === undefined) ctaZalo = 'https://zalo.me/0901234567?text=' + encodeURIComponent(ORDER_MSG);
   if (ctaMessenger === undefined) ctaMessenger = 'https://m.me/tiemhoashopflower?text=' + encodeURIComponent(ORDER_MSG);
-  if (subtitle === undefined) subtitle = 'Nhung bo hoa duoc chon lua trong ngay, goi gem tinh te va giao tan tay.';
-  if (openHours === undefined) openHours = 'Mo ca 07:30 - 21:00 moi ngay. Giao hoa noi thanh nhanh.';
+  if (subtitle === undefined) subtitle = 'Những bó hoa được chọn lọc trong ngày, gói ghém tình tế và giao tận tay.';
+  if (openHours === undefined) openHours = 'Mở cả 07:30 - 21:00 mỗi ngày. Giao hoa nội thành nhanh.';
 
   return (
     <section className="hero relative min-h-[min(100dvh,48rem)] flex items-center overflow-clip text-white">

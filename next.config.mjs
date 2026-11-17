@@ -2,6 +2,11 @@ import path from 'node:path'
 
 /** @type {import('next').NextConfig} */
 export const nextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '6mb',
+    },
+  },
   /** Build dưới dạng SSR (Node runtime) — tương thích với Server Actions / API routes. */
   images: {
     unoptimized: true,

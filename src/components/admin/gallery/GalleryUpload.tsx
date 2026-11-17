@@ -1,6 +1,6 @@
 'use client'
 
-import { addGalleryImage } from '@/app/admin/thu-vien/actions'
+import { addGalleryImage } from '@/app/admin/(protected)/thu-vien/actions'
 
 export interface GalleryUploadProps {
   /** Các thể loại (danh mục) cho ảnh gallery. */

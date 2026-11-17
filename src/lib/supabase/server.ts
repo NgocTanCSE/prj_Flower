@@ -105,9 +105,14 @@ export async function createClient(
   response?: NextResponse,
 ): Promise<SupabaseClient | null> {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return null
+  if (!/^https?:\/\//.test(SUPABASE_URL)) return null
 
-  const methods = request ? await middlewareCookieMethods(request, response!) : await serverCookieMethods()
-  return createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, clientOptions(SUPABASE_ANON_KEY, methods))
+  try {
+    const methods = request ? await middlewareCookieMethods(request, response!) : await serverCookieMethods()
+    return createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, clientOptions(SUPABASE_ANON_KEY, methods))
+  } catch {
+    return null
+  }
 }
 
 /** Server component/auth client: session cookie đọc từ next/headers. */
@@ -118,9 +123,14 @@ export async function ssrAuthClient(): Promise<SupabaseClient | null> {
 /** Admin (bypass RLS): dùng service key để truy vấn profiles/hồ sơ người dùng. */
 export async function ssrAdminClient(): Promise<SupabaseClient | null> {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) return null
+  if (!/^https?:\/\//.test(SUPABASE_URL)) return null
 
-  const methods = await serverCookieMethods()
-  return createServerClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, clientOptions(SUPABASE_SERVICE_ROLE_KEY, methods))
+  try {
+    const methods = await serverCookieMethods()
+    return createServerClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, clientOptions(SUPABASE_SERVICE_ROLE_KEY, methods))
+  } catch {
+    return null
+  }
 }
 
 // ---------------------------------------------------------------------------

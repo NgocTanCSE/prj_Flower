@@ -1,8 +1,8 @@
 # ---------------------------------------------------------------------------
-# Deploy Next.js 15 (App Router, SSR) lên Netlify.
+# Netlify + Next.js 15 (App Router, SSR)
 #
-# Build: `next build` (Node runtime). Bước kế tiếp `publish` ra `.next`
-# và mọi request được Netlify server-side render (xây dựng framework preset).
+# Next.js Runtime (@netlify/plugin-nextjs) chuyển App Router / Server Actions /
+# API routes sang Netlify Functions. Không dùng redirect tĩnh kiểu SPA.
 # ---------------------------------------------------------------------------
 
 [build]
@@ -11,26 +11,9 @@ publish = ".next"
 
 [build.environment]
 NODE_VERSION = "20"
-NEXT_RUNTIME = "nodejs"
-# Env có thể định nghĩa ở Netlify Settings > Variables (khuyên dùng)
-NEXT_PUBLIC_SUPABASE_URL = "${NEXT_PUBLIC_SUPABASE_URL}"
-NEXT_PUBLIC_SUPABASE_ANON_KEY = "${NEXT_PUBLIC_SUPABASE_ANON_KEY}"
-SITE_URL = "${SITE_URL}"
 
-[[redirects]]
-from = "/admin/*"
-to = "/admin/:splat"
-status = 200
-
-[[redirects]]
-from = "/api/*"
-to = "/api/:splat"
-status = 200
-
-[[redirects]]
-from = "/*"
-to = "/index.html"
-status = 200
+[[plugins]]
+package = "@netlify/plugin-nextjs"
 
 [[headers]]
 for = "/_next/static/*"

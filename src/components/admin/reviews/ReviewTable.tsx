@@ -1,8 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import type { Review } from '@/app/admin/danh-gia/actions'
-import { updateReviewStatus, deleteReview } from '@/app/admin/danh-gia/actions'
+import type { Review } from '@/app/admin/(protected)/danh-gia/actions'
+import { updateReviewStatus, deleteReview } from '@/app/admin/(protected)/danh-gia/actions'
 import { ReviewFilters } from './ReviewFilters'
 import { ReviewStatusBadge, starRating, formatDate } from './ReviewStatusBadge'
 

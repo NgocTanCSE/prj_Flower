@@ -8,16 +8,14 @@ import { test, expect, Page } from '@playwright/test'
  *   BASE_URL=http://localhost:3000 npx playwright test e2e/1_auth.spec.ts
  */
 const BASE = process.env.BASE_URL || 'http://localhost:3000'
-const EMAIL = process.env.E2E_ADMIN_EMAIL ?? 'admin@tiemhoacobecube.dev'
 const PASSWORD = process.env.E2E_ADMIN_PASSWORD ?? 'Password@1234'
 
-/** Nhấp đăng nhập, tự động xử lý mọi trang login từ Supabase. */
+/** Đăng nhập admin bằng mật khẩu (email cố định phía server). */
 async function adminLogin(page: Page) {
-  if (!(await page.url().includes('/login'))) {
+  if (!page.url().includes('/admin/login')) {
     return
   }
 
-  await page.fill('input[name="email"]', EMAIL)
   await page.fill('input[name="password"]', PASSWORD)
   const submit = page.locator('form').first().locator('button[type="submit"]')
   await submit.click()

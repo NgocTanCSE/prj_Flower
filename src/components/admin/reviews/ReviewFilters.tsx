@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { ReviewStatus } from '@/app/admin/danh-gia/actions'
+import { ReviewStatus } from '@/app/admin/(protected)/danh-gia/actions'
 
 interface ReviewFiltersProps {
   status: ReviewStatus | 'all'

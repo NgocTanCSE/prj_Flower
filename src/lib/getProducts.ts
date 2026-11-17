@@ -171,7 +171,7 @@ async function client(): Promise<SupabaseClient | null> {
 
   // Premium: URL / key sai → trả về null (trang vẫn render, không crash)
   try {
-    return createClient()
+    return await createClient()
   } catch {
     return null
   }

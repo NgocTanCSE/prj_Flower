@@ -4,11 +4,6 @@ on:
   push:
     branches: [main, master]
   workflow_dispatch:
-    inputs:
-      sha:
-        description: 'Cung cấp SHA deploy (optional)'
-        required: false
-        default: ''
 
 concurrency:
   group: deploy
@@ -39,21 +34,28 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Build Next.js
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
+          SITE_URL: ${{ vars.SITE_URL }}
+
       - name: Validate
         run: npm run validate
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
 
-      - name: Build Next.js
-        run: npm run build
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-          SITE_URL: ${{ vars.SITE_URL }}
-
-      - name: Deploy → Netlify
-        run: npx netlify deploy --prod --dir=.next
+      - name: Deploy → Netlify (build + plugin Next.js)
+        run: npx netlify deploy --build --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
+          SITE_URL: ${{ vars.SITE_URL }}

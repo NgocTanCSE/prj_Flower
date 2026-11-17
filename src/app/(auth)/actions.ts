@@ -42,7 +42,7 @@ export async function login(prevState: ActionResult, formData: FormData): Promis
   if (!profile) return { error: 'Tài khoản chưa có hồ sơ.' }
   if (!isAdmin(profile)) return { error: 'Tài khoản này không có quyền quản trị.' }
 
-  return { redirect: '/admin' }
+  return { redirect: '/admin/dashboard' }
 }
 
 /** Server action đăng xuất: xóa cookie `sb-session` của phiên. */

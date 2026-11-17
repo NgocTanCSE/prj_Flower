@@ -91,11 +91,11 @@ const hasManifest = fs.existsSync(manifestPath)
 const routes = hasManifest ? Object.keys(JSON.parse(fs.readFileSync(manifestPath, 'utf8'))) : []
 const expected = [
   '/(site)/san-pham/[slug]/page',
-  '/admin/dashboard/page',
-  '/admin/san-pham/page',
-  '/admin/danh-gia/page',
-  '/admin/thu-vien/page',
-  '/admin/cai-dat/page',
+  '/admin/(protected)/dashboard/page',
+  '/admin/(protected)/san-pham/page',
+  '/admin/(protected)/danh-gia/page',
+  '/admin/(protected)/thu-vien/page',
+  '/admin/(protected)/cai-dat/page',
   '/admin/login/page',
   '/api/health/route',
 ]

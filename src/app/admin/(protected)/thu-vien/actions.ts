@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 
-import { uploadFile } from '../api/actions/upload'
-import { createAdminClient } from '../api/actions/auth'
+import { uploadFile } from '@/app/admin/api/actions/upload'
+import { createAdminClient } from '@/app/admin/api/actions/auth'
 import { logAudit } from '@/lib/upload'
 
 // ---------------------------------------------------------------------------

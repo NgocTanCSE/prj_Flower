@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import type { ReviewStatus } from '@/app/admin/danh-gia/actions'
+import type { ReviewStatus } from '@/app/admin/(protected)/danh-gia/actions'
 
 const statusStyles: Record<ReviewStatus, { bg: string; text: string; border: string; label: string }> = {
   pending: {

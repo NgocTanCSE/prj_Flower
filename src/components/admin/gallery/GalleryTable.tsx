@@ -1,8 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import type { GalleryImage } from '@/app/admin/thu-vien/actions'
-import { deleteGalleryImage, updateGalleryImage } from '@/app/admin/thu-vien/actions'
+import type { GalleryImage } from '@/app/admin/(protected)/thu-vien/actions'
+import { deleteGalleryImage, updateGalleryImage } from '@/app/admin/(protected)/thu-vien/actions'
 
 export interface GalleryTableProps {
   images: GalleryImage[]

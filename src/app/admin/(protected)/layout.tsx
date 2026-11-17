@@ -3,7 +3,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 
 import { getSessionUser, isAdmin } from '@/lib/supabase/server'
-import { logout } from '../(auth)/actions'
+import { logout } from '@/app/(auth)/actions'
 
 const NAV = [
   { label: 'Danh giá', href: '/admin/danh-gia' },
@@ -25,7 +25,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       <header className="sticky top-0 z-40 border-b border-[#e8e1e1] bg-white/95 backdrop-blur-sm">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
           <div className="flex items-center gap-6">
-            <Link href="/admin" className="text-lg font-bold text-[#8b5f65]">
+            <Link href="/admin/dashboard" className="text-lg font-bold text-[#8b5f65]">
               CoBeCuBe Admin
             </Link>
             <nav className="hidden sm:flex">

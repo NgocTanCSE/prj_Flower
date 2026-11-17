@@ -190,20 +190,28 @@ export async function sendResetLink(email: string, redirectTo: string): Promise<
   return {}
 }
 
+/** Đổi mã một lần trong magic link thành phiên session. */
+export async function exchangeCodeForSession(
+  supabase: SupabaseClient,
+  code: string,
+): Promise<{ error?: string }> {
+  const { error } = await supabase.auth.exchangeCodeForSession(code)
+  if (error) return { error: error.message }
+  return {}
+}
+
 /** Cập nhật mật khẩu của user đang đăng nhập (dùng sau magic link reset). */
-export async function updatePassword(newPassword: string, confirmPassword: string): Promise<{ error?: string; redirect?: string }> {
-  const supabase = await ssrAuthClient()
-  if (!supabase) {
-    return { error: 'Không thể kết nối cơ sở dữ liệu.' }
-  }
+export async function updatePassword(
+  supabase: SupabaseClient,
+  newPassword: string,
+  confirmPassword: string,
+): Promise<{ error?: string }> {
+  if (!supabase) return { error: 'Không thể kết nối cơ sở dữ liệu.' }
+  if (newPassword !== confirmPassword) return { error: 'Mật khẩu xác nhận không khớp.' }
 
   const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) {
-    return { error: 'Vui lòng đăng nhập để đặt lại mật khẩu.' }
-  }
-  if (newPassword !== confirmPassword) {
-    return { error: 'Mật khẩu xác nhận không khớp.' }
-  }
+  if (error || !data?.user) return { error: 'Vui lòng đăng nhập để đặt lại mật khẩu.' }
+
   const { error: updateError } = await supabase.auth.updateUser({ password: newPassword })
   if (updateError) return { error: updateError.message }
   return {}

@@ -11,7 +11,7 @@
 | `/admin/login` | `src/app/admin/login/page.tsx` | **Mọi người** (public, không cần session) |
 | `/admin/*` (dashboard, san-pham, etc.) | `src/app/admin/*` | **Chỉ admin đã login** |
 | `/forgot-password` | `src/app/(auth)/forgot-password/page.tsx` | Mọi người (quên pass) |
-| `/reset-password` | `src/app/(auth)/reset-password/page.tsx` | Mọi người (từ email magic link) |
+| `/reset-password` | `src/app/reset-password/page.tsx` | Chỉ admin có link hợp lệ (từ email magic link) |
 | `/login` | **KHÔNG TỒN TẠI** (đã xóa) | — |
 
 ---
@@ -85,7 +85,7 @@ if (pathname.startsWith('/admin')) {
 | `src/app/(auth)/actions.ts` | Server Action `login()` - check role admin |
 | `src/app/admin/layout.tsx` | Double-check: redirect `/admin/login` nếu chưa login |
 | `src/app/(auth)/forgot-password/page.tsx` | Link "Quay lại đăng nhập" → `/admin/login` |
-| `src/app/(auth)/reset-password/page.tsx` | Link "Đăng nhập lại" → `/admin/login` |
+| `src/app/reset-password/page.tsx` | Đổi mật khẩu từ magic link, xong redirect `/` |
 
 ---
 

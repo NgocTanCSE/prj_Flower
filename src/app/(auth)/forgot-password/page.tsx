@@ -12,8 +12,7 @@ export default function ForgotPassword() {
   return (
     <AuthShell
       title="Quên mật khẩu"
-      description="Gửi link đặt lại mật khẩu tới email quản trị đã cấu hình."
-      backTo="/admin/login"
+      description="Nhập mật khẩu quản trị để nhận link đặt lại mật khẩu qua email."
       footer={
         <Link href="/admin/login" className="text-primary-600 transition-colors hover:text-primary-700">
           Quay lại đăng nhập
@@ -29,6 +28,21 @@ export default function ForgotPassword() {
           <p className="text-sm text-[#5b5b5b]">
             Hệ thống sẽ gửi link đặt lại mật khẩu tới email quản trị. Link có hiệu lực trong 1 giờ.
           </p>
+
+          <label htmlFor="login-password" className="block text-sm font-medium text-[#5b5b5b]">
+            Mật khẩu quản trị
+          </label>
+          <input
+            id="login-password"
+            name="password"
+            type="password"
+            placeholder="••••••"
+            required
+            autoComplete="current-password"
+            minLength={6}
+            className="w-full rounded-xl border border-primary-300 px-4 py-3 text-sm text-wenge
+              placeholder:text-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
         </AuthForm>
       )}
 

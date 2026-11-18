@@ -40,6 +40,17 @@ async function requireAdmin() {
     throw new Error('Vui lòng đăng nhập tài khoản admin để vào trang danh giá.')
   }
 
+  // Kiểm tra role admin qua bảng profiles (service role).
+  const { data: profile } = await client
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile || profile.role !== 'admin') {
+    throw new Error('Bạn không có quyền truy cập admin (role không phù hợp).')
+  }
+
   return { client }
 }
 

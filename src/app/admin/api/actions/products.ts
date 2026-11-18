@@ -205,8 +205,8 @@ export async function createProduct(formData: FormData): Promise<{ ok: boolean; 
     .select('id')
     .single()
 
-  if (error) {
-    throw new Error(`Tạo sản phẩm thất bại: ${error.message}`)
+  if (error || !product) {
+    return { ok: false, error: `Tạo sản phẩm thất bại: ${error?.message ?? 'Không có dữ liệu trả về'}` }
   }
 
   // Ảnh chính (is_primary = true) trong bảng `product_images`.
@@ -218,7 +218,7 @@ export async function createProduct(formData: FormData): Promise<{ ok: boolean; 
       sort_order: 1,
       is_primary: true,
     })
-    if (imgError) throw new Error(`Tạo ảnh sản phẩm thất bại: ${imgError.message}`)
+    if (imgError) return { ok: false, error: `Tạo ảnh sản phẩm thất bại: ${imgError.message}` }
   }
 
   await logAudit({
@@ -263,7 +263,7 @@ export async function updateProduct(formData: FormData): Promise<{ ok: boolean; 
         .from('product_images')
         .update({ url: imageUrl, alt: parsed.data.name, sort_order: 1 })
         .eq('id', prev[0].id)
-      if (imgError) throw new Error(`Cập nhật ảnh sản phẩm thất bại: ${imgError.message}`)
+      if (imgError) return { ok: false, error: `Cập nhật ảnh sản phẩm thất bại: ${imgError.message}` }
     } else {
       const { error: imgError } = await client.from('product_images').insert({
         product_id: Number(id),
@@ -272,7 +272,7 @@ export async function updateProduct(formData: FormData): Promise<{ ok: boolean; 
         sort_order: 1,
         is_primary: true,
       })
-      if (imgError) throw new Error(`Tạo ảnh sản phẩm thất bại: ${imgError.message}`)
+      if (imgError) return { ok: false, error: `Tạo ảnh sản phẩm thất bại: ${imgError.message}` }
     }
   }
 
@@ -289,7 +289,7 @@ export async function updateProduct(formData: FormData): Promise<{ ok: boolean; 
     .eq('id', Number(id))
 
   if (error) {
-    throw new Error(`Cập nhật sản phẩm thất bại: ${error.message}`)
+    return { ok: false, error: `Cập nhật sản phẩm thất bại: ${error.message}` }
   }
 
   await logAudit({
@@ -309,7 +309,7 @@ export async function deleteProduct(id: string): Promise<{ ok: boolean; error?: 
   const { error } = await client.from('products').update({ status: 'draft', is_active: false }).eq('id', Number(id))
 
   if (error) {
-    throw new Error(`Xóa sản phẩm thất bại: ${error.message}`)
+    return { ok: false, error: `Xóa sản phẩm thất bại: ${error.message}` }
   }
 
   await logAudit({ action: 'san-pham-delete', table: 'products', record_id: String(id) })
@@ -321,12 +321,12 @@ export async function deleteProduct(id: string): Promise<{ ok: boolean; error?: 
 export async function toggleProductPublish(id: string): Promise<{ ok: boolean; error?: string }> {
   const client = await createAdminClient()
   const { data: row } = await client.from('products').select('status').eq('id', Number(id)).single()
-  if (!row) throw new Error('Sản phẩm không tồn tại.')
+  if (!row) return { ok: false, error: 'Sản phẩm không tồn tại.' }
   const { error } = await client
     .from('products')
     .update({ status: row.status === 'published' ? 'draft' : 'published' })
     .eq('id', Number(id))
-  if (error) throw new Error(`Cập nhật trạng thái thất bại: ${error.message}`)
+  if (error) return { ok: false, error: `Cập nhật trạng thái thất bại: ${error.message}` }
 
   await logAudit({ action: 'san-pham-publish', table: 'products', record_id: String(id) })
   revalidatePath('/admin/san-pham')
@@ -337,12 +337,12 @@ export async function toggleProductPublish(id: string): Promise<{ ok: boolean; e
 export async function toggleProductActive(id: string): Promise<{ ok: boolean; error?: string }> {
   const client = await createAdminClient()
   const { data: row } = await client.from('products').select('is_active').eq('id', Number(id)).single()
-  if (!row) throw new Error('Sản phẩm không tồn tại.')
+  if (!row) return { ok: false, error: 'Sản phẩm không tồn tại.' }
   const { error } = await client
     .from('products')
     .update({ is_active: !row.is_active })
     .eq('id', Number(id))
-  if (error) throw new Error(`Cập nhật trạng thái thất bại: ${error.message}`)
+  if (error) return { ok: false, error: `Cập nhật trạng thái thất bại: ${error.message}` }
 
   await logAudit({ action: 'san-pham-toggle', table: 'products', record_id: String(id) })
   revalidatePath('/admin/san-pham')
@@ -353,7 +353,7 @@ export async function toggleProductActive(id: string): Promise<{ ok: boolean; er
 export async function toggleProductsActive(ids: string[], active: boolean): Promise<{ ok: boolean; error?: string }> {
   const client = await createAdminClient()
   const { error } = await client.from('products').update({ is_active: active }).in('id', ids.map(Number))
-  if (error) throw new Error(`Cập nhật trạng thái thất bại: ${error.message}`)
+  if (error) return { ok: false, error: `Cập nhật trạng thái thất bại: ${error.message}` }
 
   await logAudit({ action: 'san-pham-bulk', table: 'products', record_id: ids.join(',') })
   revalidatePath('/admin/san-pham')

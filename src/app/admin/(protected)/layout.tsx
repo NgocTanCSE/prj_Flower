@@ -8,9 +8,10 @@ import { logout } from '@/app/(auth)/actions'
 const NAV = [
   { label: 'Danh giá', href: '/admin/danh-gia' },
   { label: 'Thư viện', href: '/admin/thu-vien' },
-  { label: 'Sản phẩm', href: '/admin/san-pham', future: true },
-  { label: 'Danh mục', href: '/admin/danh-muc', future: true },
-  { label: 'Cài đặt', href: '/admin/cai-dat', future: true },
+  { label: 'Sản phẩm', href: '/admin/san-pham' },
+  { label: 'Danh mục', href: '/admin/danh-muc' },
+  { label: 'Cài đặt', href: '/admin/cai-dat' },
+  { label: 'Thống kê', href: '/admin/thong-ke' },
 ]
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
@@ -29,7 +30,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
               Shop Flower Admin
             </Link>
             <nav className="hidden sm:flex">
-              {NAV.filter((n) => !n.future).map((n) => (
+              {NAV.map((n) => (
                 <Link
                   key={n.href}
                   href={n.href}

@@ -2,7 +2,7 @@ import { createClient, type SupabaseClient, type User } from '@supabase/supabase
 import { createClient as supabaseSSRClient } from './supabase/server'
 
 // -----------------------------------------------------------------------
-// Environment. `NEXT_PUBLIC_` biến được cắm bởi CI / Netlify / Vercel.
+// Environment. `NEXT_PUBLIC_` biến được cắm bởi CI / Cloudflare Workers.
 // Keys không bao giờ xuống frontend (service_role chỉ dùng ở sync job).
 // -----------------------------------------------------------------------
 

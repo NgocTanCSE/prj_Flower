@@ -98,14 +98,23 @@ if (pathname.startsWith('/admin')) {
 
 ---
 
-## 6. Deploy Netlify (single app)
+## 6. Deploy Cloudflare Workers (OpenNext)
+
+- `wrangler.jsonc`: Worker `prj-flower`, static assets trong `.open-next/assets`.
+- `open-next.config.ts`: cấu hình tối giản, không bật R2/D1.
+- `public/_headers`: cache `/_next/static/*` với `immutable`.
+- Security headers (`X-Frame-Options`, ...): `next.config.mjs` → `headers()`.
 
 ```
-netlify.toml:
-  command = "next build"
-  publish = ".next"
-  
-GitHub Actions: build → deploy .next lên Netlify
+npm run preview   # build + chạy Worker local
+npm run deploy    # build + deploy lên Cloudflare
+npm run upload    # build + upload version
+npm run cf-typegen
 ```
 
-Tất cả route (site + admin) cùng 1 deploy, cùng 1 domain.
+Biến môi trường trên Cloudflare Dashboard:
+
+- Build-time: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SITE_URL`
+- Runtime: các biến trên + `SUPABASE_SERVICE_KEY` (secret), `ADMIN_EMAIL`
+
+Tất cả route (site + admin) cùng 1 Worker, cùng 1 domain.

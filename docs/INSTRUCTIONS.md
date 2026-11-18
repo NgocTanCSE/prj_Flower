@@ -8,7 +8,7 @@ Tiệm Hoa Shop Flower
 Kiến trúc A - **SSR qua Supabase (hầu hết logic nằm ở RLS & Supabase Client).**
 - FE: Next.js 15 App Router, TypeScript, TailwindCSS
 - BE: Supabase Postgres (PostgREST API), Supabase Auth (Login), Supabase Storage (Ảnh)
-- Deploy: Netlify (miễn phí, thương mại) + Supabase (miễn phí)
+- Deploy: Cloudflare Workers (@opennextjs/cloudflare) + Supabase (miễn phí)
 - Admin panel: `/admin`, login từ Supabase Auth, session cookie
 -教徒: sản phẩm, danh mục, đánh giá, thư viện ảnh, cài đặt site, tin nhắn
 
@@ -17,7 +17,7 @@ A1 - DB: supabase/migrations/*, supabase/seed.sql, docs/DB.md
 A2 - Auth: src/lib/supabase/*, src/lib/auth/*, src/app/(auth)/*, middleware.ts, src/app/layout.tsx
 A3 - Public: src/app/(site)/*, src/components/site/*, src/styles/site.css
 A4 - Admin products/settings: src/app/admin/*, src/components/admin/products/*, src/components/admin/settings/*, src/components/admin/uploader/*
-A5 - Admin review/gallery + QA: src/components/admin/reviews/*, src/components/admin/gallery/*, src/app/admin/(danh-gia|thu-vien)/*, e2e/*, netlify.toml, .github/*, src/app/error.tsx, src/app/not-found.tsx
+A5 - Admin review/gallery + QA: src/components/admin/reviews/*, src/components/admin/gallery/*, src/app/admin/(danh-gia|thu-vien)/*, e2e/*, wrangler.jsonc, open-next.config.ts, public/_headers, .github/*, src/app/error.tsx, src/app/not-found.tsx
 
 Rules:
 1. Only write to declared files. No package.json to another agent, no next.config.ts.

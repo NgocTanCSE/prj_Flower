@@ -30,6 +30,7 @@
   },
   "include": [
     "**/*.mjs",
+    "open-next.config.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     ".next/types/**/*.ts"
@@ -37,6 +38,7 @@
   "exclude": [
     "node_modules",
     ".next",
+    ".open-next",
     "out",
     "build",
     "e2e"

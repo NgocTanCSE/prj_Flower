@@ -2,7 +2,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 // ---------------------------------------------------------------------------
 // Environment.
-// `NEXT_PUBLIC_` biến được cung cấp bởi CI / Netlify / Vercel.
+// `NEXT_PUBLIC_` biến được cung cấp bởi CI / Cloudflare Workers.
 // Service role key KHÔNG bao giờ xuống phía client.
 // ---------------------------------------------------------------------------
 

@@ -8,8 +8,22 @@ Website SSR thương mại cho tiệm hoa.تام
 |---|---|---|
 | Frontend | **Next.js 15** (App Router, TypeScript, Tailwind) | SSR, SEO, Server Actions |
 | DB/Auth/Storage | **Supabase** (Postgres + Auth + RLS + Storage) | Tạo trong 10 phút, free tier |
-| Deploy | **Netlify** | miễn phí, thương mại |
+| Deploy | **Cloudflare Workers** (`@opennextjs/cloudflare`) | SSR Node runtime, free tier |
 | Lưu trữ ảnh | Supabase Storage | tự lưu, CDN |
+
+## Deploy (Cloudflare Workers)
+
+```bash
+npm run preview   # build + chạy Worker local
+npm run deploy    # build + deploy lên Cloudflare
+npm run upload    # build + upload một version mới
+npm run cf-typegen
+```
+
+Yêu cầu Node >= 22.12.0. Các biến cần đặt trên Cloudflare Dashboard:
+
+- Build-time: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SITE_URL`
+- Runtime: các biến trên + `SUPABASE_SERVICE_KEY` (secret), `ADMIN_EMAIL`
 
 ## Quản lý
 

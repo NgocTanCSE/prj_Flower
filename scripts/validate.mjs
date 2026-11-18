@@ -1,5 +1,5 @@
 /**
- * Validate bước cuối trước khi đẩy lên Netlify.
+ * Validate bước cuối trước khi deploy lên Cloudflare Workers.
  *
  * Chạy: npm run validate
  *

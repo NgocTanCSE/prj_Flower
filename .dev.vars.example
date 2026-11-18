@@ -1,0 +1,18 @@
+# ---------------------------------------------------------------------------
+# Copy file này thành .dev.vars (đã gitignore) để chạy `npm run preview`.
+#
+# Đây là biến runtime của Worker local. Khi build, Next.js vẫn đọc .env / .env.local
+# cho các biến NEXT_PUBLIC_* (các biến này được inline lúc build).
+# ---------------------------------------------------------------------------
+
+NEXTJS_ENV=development
+
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOi...
+# service_role key - CHỈ dùng server-side, KHÔNG đưa xuống frontend
+SUPABASE_SERVICE_KEY=eyJhbGciOi...
+
+ADMIN_EMAIL=admin@tiemhoashopflower.dev
+
+# Wrangler preview mặc định chạy ở cổng 8787.
+SITE_URL=http://localhost:8787

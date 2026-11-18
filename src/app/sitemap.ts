@@ -10,7 +10,8 @@ export const revalidate = 3600
  * Các trang tĩnh (`/`, `/bo-suu-tap`, `/gioi-thieu`, `/lien-he`) được hardcode.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.SITE_URL ?? 'https://tiemhoashopflower.netlify.app'
+  // Production phải đặt SITE_URL (domain Cloudflare Worker); fallback chỉ dùng local.
+  const siteUrl = process.env.SITE_URL ?? 'http://localhost:3000'
 
   const urls: MetadataRoute.Sitemap = [
     {

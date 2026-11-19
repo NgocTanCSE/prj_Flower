@@ -4,6 +4,7 @@ import { createAdminClient, requireAdmin } from './auth'
 import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import { logAudit } from '@/lib/upload'
+import { newBigIntId } from '@/lib/ids'
 
 // ---------------------------------------------------------------------------
 // Category (0001_init.sql):
@@ -84,7 +85,7 @@ export async function createCategory(formData: FormData): Promise<{ ok: boolean;
   const client = await createAdminClient()
 
   // Không cho trùng slug / name.
-  const slugExists = await client
+  const { data: slugExists } = await client
     .from('categories')
     .select('id')
     .eq('slug', parsed.data.slug)
@@ -96,6 +97,7 @@ export async function createCategory(formData: FormData): Promise<{ ok: boolean;
   }
 
   const { data: category, error } = await client.from('categories').insert({
+    id: newBigIntId(),
     name: parsed.data.name,
     slug: parsed.data.slug,
     parent_id: parsed.data.parent_id ?? null,
@@ -124,7 +126,7 @@ export async function updateCategory(id: string, formData: FormData): Promise<{ 
   const client = await createAdminClient()
 
   // Không trùng slug / name (trừ chính nó).
-  const slugExists = await client
+  const { data: slugExists } = await client
     .from('categories')
     .select('id')
     .eq('slug', parsed.data.slug)

@@ -6,6 +6,7 @@
 import { ProductForm } from '@/components/admin/ProductForm'
 import { createProduct } from '@/app/admin/api/actions/products'
 import { getCategories } from '@/app/admin/api/actions/categories'
+import { PageHeader } from '@/components/admin/PageHeader'
 
 export const metadata = {
   title: 'Thêm sản phẩm | Quản trị',
@@ -14,22 +15,31 @@ export const metadata = {
 
 export default async function NewProductPage() {
   let categories: Awaited<ReturnType<typeof getCategories>> = []
+  let loadError: string | null = null
   try {
     categories = await getCategories()
-  } catch {
-    // Supabase chưa cấu hình (hoặc chưa đăng nhập): danh sách rời.
+  } catch (error) {
+    // Không nuốt lỗi: form vẫn render, nhưng báo rõ nguyên nhân.
     categories = []
+    loadError = error instanceof Error ? error.message : 'Không thể tải danh mục.'
   }
 
   return (
-    <main>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[#1a1a1a]">Thêm sản phẩm mới</h1>
-        <p className="text-sm text-[#5b5b5b]">Điền đầy đủ thông tin sản phẩm.</p>
-      </div>
+    <div className="admin-content">
+      <PageHeader
+        title="Thêm sản phẩm mới"
+        subtitle="Điền đầy đủ thông tin sản phẩm."
+      />
+
+      {loadError ? (
+        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <strong>Lỗi tải danh mục:</strong> {loadError}
+        </div>
+      ) : null}
+
       <div className="rounded-xl border border-[#e8e1e1] bg-white p-6">
         <ProductForm categories={categories} onSubmit={createProduct} submitLabel="Tạo sản phẩm" />
       </div>
-    </main>
+    </div>
   )
 }

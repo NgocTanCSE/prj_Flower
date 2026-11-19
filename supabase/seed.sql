@@ -130,7 +130,8 @@ INSERT INTO public.settings (key, value) VALUES
   ('site_theme_primary',  '#8b5f65'),
   ('site_theme_body',     '#1a1a1a'),
   ('shop_hero_title',     'Bó hoa đẹp cho bạn yêu thương'),
-  ('shop_hero_subtitle',  'Những bó hoa được chọn lọc trong ngày');
+  ('shop_hero_subtitle',  'Những bó hoa được chọn lọc trong ngày'),
+  ('hero_panel_count',    '3');
 
 -- ------------------
 -- AuditLog: 1 ban ghi chuan

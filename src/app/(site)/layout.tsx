@@ -39,12 +39,23 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function SiteLayout({ children }: { children: ReactNode }) {
-  const shopName = (await setting('shop_name')) || 'Tiệm Hoa Shop Flower'
-  const logoUrl = (await setting('shop_logo_url')) || ''
+  const [shopName, logoUrl, ctaZalo, ctaMessenger, phone] = await Promise.all([
+    setting('shop_name'),
+    setting('shop_logo_url'),
+    setting('zalo_link'),
+    setting('messenger_link'),
+    setting('phone'),
+  ])
 
   return (
     <div className="flex min-h-screen flex-1 flex-col">
-      <Header shopName={shopName} logoUrl={logoUrl} />
+      <Header
+        shopName={shopName || 'Tiệm Hoa Shop Flower'}
+        logoUrl={logoUrl}
+        ctaZalo={ctaZalo}
+        ctaMessenger={ctaMessenger}
+        phone={phone}
+      />
       <main className="flex-1">{children}</main>
       <Footer />
     </div>

@@ -38,10 +38,20 @@ export default {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
+        'toast-in': {
+          '0%': { opacity: '0', transform: 'translateX(24px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        'panel-up': {
+          '0%': { opacity: '0', transform: 'translateY(16px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         'reveal-up': 'reveal-up 0.7s ease-out forwards',
         'fade-in': 'fade-in 0.4s ease-out forwards',
+        'toast-in': 'toast-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards',
+        'panel-up': 'panel-up 0.55s ease-out forwards',
       },
     },
   },

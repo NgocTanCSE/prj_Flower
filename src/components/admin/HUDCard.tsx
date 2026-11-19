@@ -34,7 +34,7 @@ export function HUDCard({ label, value, change, accent = 'rose', icon }: HUDCard
           <span className="rounded-lg p-2">{icon}</span>
         )}
       </div>
-      <div className="text-3xl font-bold text-[#1a1a1a]">{value}</div>
+      <div className="text-3xl font-bold tabular-nums text-[#1a1a1a]">{value}</div>
       {change && (
         <p className="text-xs text-[#5b5b5b]">{`${change.label} ${change.value}`}</p>
       )}

@@ -31,25 +31,46 @@ Không dùng `@cloudflare/next-on-pages` (đã deprecated).
 - `[x]` hoàn thành
 - `[!]` bị chặn / cần quyết định
 
-## Trạng thái thực hiện (2026-11-18)
+## Trạng thái thực hiện (2026-11-19)
 
 - [x] Phase 0 — Baseline.
 - [x] Phase 1 — Dependency & cấu hình Cloudflare.
 - [x] Phase 2 — Runtime, env & CI.
 - [x] Phase 3 — Tài liệu & dọn dấu vết Netlify.
 - [x] Phase 4 — Build, type-check, typegen và preview smoke test.
-  - CRUD với Supabase thật chưa chạy vì môi trường local chưa có `.env`/`.dev.vars`.
-- [ ] Phase 5 — Deploy thật; đang chờ domain production và Cloudflare credentials.
+- [~] Phase 5 — Deploy & bàn giao.
+  - [x] Deploy Worker `prj-flower` lên Cloudflare Workers.
+  - [x] Production URL: `https://prj-flower.flowershop.workers.dev`.
+  - [x] `SITE_URL` local + Worker secret khớp domain mới.
+  - [x] `NEXT_PUBLIC_SUPABASE_URL` + anon key hoạt động; public site đọc được sản phẩm.
+  - [x] `/api/health` trả `ok`.
+  - [x] `SUPABASE_SERVICE_KEY` đã set làm Worker secret.
+  - [ ] Xác nhận đăng nhập admin + CRUD thật.
+  - [ ] Cập nhật Supabase Auth Site URL / Redirect URL.
+  - [ ] Gỡ Netlify/DNS production nếu còn.
+- [x] Không dùng Cloudflare Access/Zero Trust; auth do Supabase Auth + `middleware.ts`.
+
+## Production hiện tại
+
+| Mục | Giá trị |
+|---|---|
+| URL | `https://prj-flower.flowershop.workers.dev` |
+| Worker | `prj-flower` |
+| Build | `opennextjs-cloudflare build` → `.open-next/worker.js` + `.open-next/assets` |
+| Runtime | Cloudflare Workers + static assets |
+| R2/D1/Durable Objects | Không dùng |
+| Cloudflare Access | Không bật (site public) |
 
 Kết quả kiểm chứng đã chạy:
 
-- Đã gỡ `sharp` (không được import; `images.unoptimized: true`).
 - `npm run lint` → pass.
 - `npx tsc --noEmit` → pass.
-- `npx opennextjs-cloudflare build` → pass, `.open-next/worker.js` được tạo.
-- `npx wrangler deploy --dry-run` → pass, gzip **1369.94 KiB** (dưới giới hạn 3 MiB của Workers Free).
-- `npm run validate` → 5/5 pass.
-- `npm run preview` → `/`, `/admin/login`, `/sitemap.xml` trả 200; `/api/health` trả `degraded` do thiếu biến Supabase local.
+- `npm run deploy` → pass, Worker `prj-flower` được upload.
+- `/` → 200, hiển thị sản phẩm từ Supabase.
+- `/admin/login` → 200.
+- `/admin` → 307 → `/admin/dashboard`; chưa đăng nhập thì `/admin/dashboard` → `/admin/login`.
+- `/api/health` → `ok`.
+- `/sitemap.xml` → dùng đúng domain `flowershop.workers.dev`.
 - Security headers và `_headers` cache static hoạt động đúng.
 
 ---
@@ -444,14 +465,15 @@ hoặc bằng Wrangler.
 **Files:** không sửa.
 
 **Acceptance criteria:**
-- [ ] Build-time: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SITE_URL`.
-- [ ] Runtime: các biến trên + `SUPABASE_SERVICE_KEY` (secret), `ADMIN_EMAIL`.
-- [ ] Không đưa `GOOGLE_*`, `R2_*`, `DRY_RUN` lên Worker nếu app không dùng.
+- [x] Build-time: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SITE_URL`.
+- [x] Runtime: `SUPABASE_SERVICE_KEY` (secret), `SITE_URL` (secret).
+- [~] `ADMIN_EMAIL`: đang bake từ `.env.local`; chưa set Worker secret riêng.
+- [x] Không đưa `GOOGLE_*`, `R2_*`, `DRY_RUN` lên Worker nếu app không dùng.
 - [ ] Dùng `--keep-vars` khi deploy để không xóa biến dashboard.
 
 **Verification:**
-- [ ] `npx wrangler secret list`
-- [ ] Kiểm tra Dashboard → Worker → Settings → Variables.
+- [x] `npx wrangler secret list` → có `SITE_URL`, `SUPABASE_SERVICE_KEY`.
+- [x] Kiểm tra Dashboard → Worker → Settings → Variables.
 
 **Dependencies:** Checkpoint 4  
 **Scope:** S (0 files)
@@ -463,15 +485,15 @@ hoặc bằng Wrangler.
 **Files:** không sửa.
 
 **Acceptance criteria:**
-- [ ] `npm run deploy` thành công.
-- [ ] Worker `prj-flower` xuất hiện trên Cloudflare.
-- [ ] Custom domain trỏ đúng Worker.
-- [ ] `/`, `/admin/login`, `/api/health` hoạt động trên domain thật.
+- [x] `npm run deploy` thành công.
+- [x] Worker `prj-flower` xuất hiện trên Cloudflare.
+- [~] Custom domain: chưa gắn; đang dùng `workers.dev`.
+- [x] `/`, `/admin/login`, `/api/health` hoạt động trên domain thật.
 
 **Verification:**
-- [ ] `npm run deploy`
-- [ ] `npx wrangler deployments list`
-- [ ] `curl -I https://<domain>/`
+- [x] `npm run deploy`
+- [x] `npx wrangler deployments list`
+- [x] `curl -I https://prj-flower.flowershop.workers.dev/`
 
 **Dependencies:** Task 5.1  
 **Scope:** S (0 files)
@@ -499,10 +521,10 @@ mật khẩu; sau khi ổn định mới xóa site/DNS Netlify.
 
 ### Checkpoint 5 — Hoàn tất migration
 
-- [ ] Production chạy trên Cloudflare Workers.
+- [x] Production chạy trên Cloudflare Workers.
 - [ ] Supabase Auth hoạt động với domain mới.
 - [ ] Netlify đã được gỡ khỏi repo và hạ tầng.
-- [ ] `grep -Rin netlify` trả về 0.
+- [x] `grep -Rin netlify` trả về 0 ngoài `tasks/todo.md`.
 
 ---
 

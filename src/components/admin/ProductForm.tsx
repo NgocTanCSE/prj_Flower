@@ -12,6 +12,8 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Button } from './Button';
 import type { Product } from '@/app/admin/api/actions/products';
+import { notifyToast } from './toast/toast';
+import { COMPRESS_PRESETS, compressImage, formatBytes } from '@/lib/image-compress';
 
 export interface ProductFormProps {
   product?: Product;
@@ -33,13 +35,34 @@ export function ProductForm({ product, categories, onSubmit, submitLabel = 'Lưu
     if (pending) return;
     setPending(true);
     setError(null);
-    const formData = new FormData(e.currentTarget);
-    const result = await onSubmit(formData);
-    setPending(false);
-    setError(result.ok ? null : result.error ?? null);
-    if (result.ok) {
-      formRef.current?.reset();
-      setPreview('');
+    try {
+      const formData = new FormData(e.currentTarget);
+
+      // Nén ảnh sản phẩm ngay trên trình duyệt (WebP, cạnh dài ≤ 1600px).
+      // Lỗi/không hỗ trợ → giữ file gốc, server vẫn kiểm tra lại.
+      let note = '';
+      const rawImage = formData.get('image');
+      if (rawImage instanceof File && rawImage.size > 0) {
+        const compressed = await compressImage(rawImage, COMPRESS_PRESETS.product);
+        formData.set('image', compressed.file);
+        if (compressed.compressed) {
+          note = ` (ảnh nén ${formatBytes(compressed.originalSize)} → ${formatBytes(compressed.size)})`;
+        }
+      }
+
+      const result = await onSubmit(formData);
+      setError(result.ok ? null : result.error ?? null);
+      if (result.ok) {
+        notifyToast(`${submitLabel} thành công.${note}`, 'success');
+        formRef.current?.reset();
+        setPreview('');
+      }
+    } catch (error) {
+      // Server action có thể throw (ví dụ: upload ảnh lỗi) — phải bắt để
+      // tránh pending kẹt và hiện thông báo lỗi rõ nguyên nhân.
+      setError(error instanceof Error ? error.message : 'Có lỗi xảy ra.');
+    } finally {
+      setPending(false);
     }
   };
 
@@ -64,7 +87,7 @@ export function ProductForm({ product, categories, onSubmit, submitLabel = 'Lưu
   return (
     <form ref={formRef} onSubmit={handleSubmit} className={className} noValidate>
       {error && (
-        <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+        <div role="alert" className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 transition-colors">{error}</div>
       )}
 
       {/* Ảnh */}

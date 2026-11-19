@@ -59,19 +59,19 @@ export function Table<T = Record<string, unknown>>({
                 key={header.key}
                 className={`
                   ${header.sortable ? 'cursor-pointer hover:bg-white' : ''}
-                  px-4 py-3 font-semibold uppercase tracking-wide text-[#5b5b5b] text-[0.75rem]
+                  px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[#5b5b5b]
                 `}
               >
                 {header.label}
               </th>
             ))}
-            {actions && <th className="px-4 py-3 w-[140px]"></th>}
+            {actions && <th className="px-4 py-3 w-[150px] text-xs"></th>}
           </tr>
         </thead>
         <tbody>
           {loading && (
             <tr>
-              <td colSpan={headers.length + 1} className="py-8 text-center">
+              <td colSpan={headers.length + 1} className="py-10 text-center">
                 <span className="inline-flex items-center gap-2 text-sm text-[#5b5b5b]">
                   <span className="block h-2 w-2 rounded-full bg-[#8b5f65] animate-pulse" />
                   Đang tải...
@@ -83,8 +83,10 @@ export function Table<T = Record<string, unknown>>({
             rows.map((row, i) => {
               // `T` có thể là một interface bất kỳ: ép kiểu để đọc theo key.
               const cellRow = row as Record<string, unknown>
+              // Key ổn định: ưu tiên `id` nếu row có, tránh re-render lộn khi sort.
+              const rowKey = (cellRow as { id?: unknown }).id ?? i
               return (
-                <tr key={i} className="border-t border-[#f4eeef] hover:bg-[#faf5fa] transition-colors">
+                <tr key={String(rowKey)} className="border-t border-[#f4eeef] hover:bg-[#faf5fa] transition-colors">
                   {render ? (
                     <td colSpan={headers.length + 1} className="px-4 py-3">
                       {render(row)}

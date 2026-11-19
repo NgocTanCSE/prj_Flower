@@ -2,6 +2,7 @@ import { getStats } from '@/app/admin/api/actions/stats'
 import { getPublicProductsForAdmin } from '@/app/admin/api/actions/products'
 import { HUDCard } from '@/components/admin/HUDCard'
 import { Loader } from '@/components/admin/Loader'
+import { PageHeader } from '@/components/admin/PageHeader'
 import Link from 'next/link'
 
 export const metadata = {
@@ -12,11 +13,12 @@ export const metadata = {
 export default async function DashboardPage() {
   let stats: Awaited<ReturnType<typeof getStats>>
   let products: Awaited<ReturnType<typeof getPublicProductsForAdmin>>
+  let loadError: string | null = null
   let loading = true
 
   try {
     ;[stats, products] = await Promise.all([getStats(), getPublicProductsForAdmin()])
-  } catch {
+  } catch (error) {
     stats = {
       viewsTotal: 0,
       totalProducts: 0,
@@ -28,6 +30,7 @@ export default async function DashboardPage() {
       totalGallery: 0,
     }
     products = []
+    loadError = error instanceof Error ? error.message : 'Không thể tải dữ liệu tổng quan.'
   } finally {
     loading = false
   }
@@ -41,11 +44,17 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[#1a1a1a]">Tổng quan</h1>
-        <p className="text-sm text-[#5b5b5b]">Tình hình cửa hàng hôm nay</p>
-      </div>
+    <div className="admin-content">
+      <PageHeader
+        title="Tổng quan"
+        subtitle="Tình hình cửa hàng hôm nay"
+      />
+
+      {loadError ? (
+        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <strong>Lỗi tải dữ liệu:</strong> {loadError}
+        </div>
+      ) : null}
 
       <div className="mb-8 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
         <HUDCard
@@ -93,11 +102,11 @@ export default async function DashboardPage() {
             {products.slice(0, 5).map((product) => (
               <li
                 key={product.id}
-                className="flex items-center justify-between rounded-lg border border-[#e8e1e1] px-4 py-2 text-sm"
+                className="flex items-center justify-between rounded-lg border border-[#e8e1e1] px-4 py-2 text-sm transition-colors hover:bg-[#faf5fa]"
               >
                 <span className="font-medium text-[#1a1a1a]">{product.name}</span>
                 <span className="text-sm text-[#5b5b5b]">
-                  {product.price.toLocaleString('vi-VN')}₫
+                  {Number(product.price).toLocaleString('vi-VN')}₫
                 </span>
               </li>
             ))}
@@ -161,6 +170,6 @@ export default async function DashboardPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

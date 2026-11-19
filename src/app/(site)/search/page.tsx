@@ -42,32 +42,44 @@ export default async function SearchPage({
         />
 
         {/* Bộ lọc nhanh */}
-        <form action="/search" method="get" className="flex flex-wrap gap-3 mb-8">
+        <form
+          action="/search"
+          method="get"
+          className="mx-auto mb-10 flex max-w-3xl flex-col gap-3 rounded-full border border-[var(--color-border)] bg-white p-2 shadow-[var(--shadow-card)] sm:flex-row sm:items-center"
+        >
+          <label htmlFor="search-q" className="sr-only">
+            Từ khóa tìm kiếm
+          </label>
           <input
+            id="search-q"
             type="search"
             name="q"
             defaultValue={search}
             placeholder="Tìm kiếm sản phẩm..."
-            className="rounded-full border border-[var(--color-border)] px-5 py-2.5 text-sm bg-white flex-1 min-w-[240px] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            className="w-full min-w-0 flex-1 rounded-full border-0 bg-transparent px-5 py-3 text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-lighter)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
           />
+          <label htmlFor="search-category" className="sr-only">
+            Danh mục
+          </label>
           <select
+            id="search-category"
             name="category"
             defaultValue={category}
-            className="rounded-full border border-[var(--color-border)] px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            className="field field-select w-full shrink-0 sm:w-52"
           >
-            <option value="all">Tất cả</option>
+            <option value="all">Tất cả danh mục</option>
             {categories.map((c) => (
               <option key={c.slug} value={c.slug}>
                 {c.name.trim()}
               </option>
             ))}
           </select>
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary shrink-0 px-8">
             Tìm
           </button>
         </form>
 
-        <p className="text-sm text-[var(--color-ink-light)] mb-4">
+        <p className="mb-6 text-sm text-[var(--color-ink-light)]">
           {total === 0 ? 'Không tìm thấy sản phẩm nào.' : `${formatCount(total)} sản phẩm tìm thấy`}
         </p>
 
@@ -79,7 +91,7 @@ export default async function SearchPage({
             </Link>
           </div>
         ) : (
-          <Cards cols="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <Cards cols="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {items.map((p) => <ProductCard key={p.id} product={p} showBadge={false} />)}
           </Cards>
         )}

@@ -93,8 +93,14 @@ export async function logAudit(entry: AuditEntry): Promise<void> {
     } = await client.auth.getUser()
 
     const record: Record<string, unknown> = {
-      ...entry,
-      id: crypto.randomUUID(),
+      action: entry.action,
+      // `table` là NOT NULL: luôn gửi chuỗi (kể cả rỗng) thay vì undefined.
+      table: entry.table ?? '',
+      record_id: entry.record_id ?? null,
+      data: entry.data ?? {},
+      // KHÔNG tự đặt `id`: cột `audit_log.id` là bigserial, DB tự sinh.
+      // (Trước đây gán crypto.randomUUID() → lỗi "invalid input syntax for bigint"
+      //  và mọi log bị nuốt im lặng.)
       user_id: userError || !user ? null : user.id,
       created_at: new Date().toISOString(),
     }
@@ -107,7 +113,16 @@ export async function logAudit(entry: AuditEntry): Promise<void> {
 }
 
 // -----------------------------------------------------------------------
-// Image upload via presigned URL (Supabase Storage)
+// Image upload
+// -----------------------------------------------------------------------
+//
+// Upload server-side (admin): dùng `uploadFile` trong
+// `src/app/admin/api/actions/upload.ts` — flow presigned URL bằng service
+// role (bypass RLS), ổn định trên mọi runtime (Workers / Node).
+//
+// Không tạo client upload ad-hoc ở đây: hàm trước đây dùng anon client
+// không đính kèm session nên `createSignedUploadUrl` bị từ chối bởi RLS
+// (chỉ có policy SELECT cho bucket `assets`).
 // -----------------------------------------------------------------------
 
 export interface UploadResult {
@@ -115,40 +130,4 @@ export interface UploadResult {
   path: string
   /** URL công khai của ảnh. */
   url: string
-}
-
-/**
- * Upload file đến Supabase Storage qua presigned URL.
- * Presigned URL hết hạn sau 2 giờ và chỉ đang login admin.
- * Tham số:
- *  - `file`: File từ `<input type="file">` hoặc Blob.
- *  - `path`: đường dẫn lưu trữ trong bucket (nên có folder: `gallery/ten-file`).
- * Trả về `UploadResult` có `path` và `url`.
- */
-export async function uploadImage(file: File, path: string): Promise<UploadResult> {
-  const client = createSupabaseClient()
-  if (!client) throw new Error('Không thể tạo client Supabase: URL không được cấu hình.')
-
-  const { data: signed, error: signedError } = await client.storage
-    .from(BUCKET)
-    .createSignedUploadUrl(path, { upsert: true })
-
-  if (signedError || !signed?.token) {
-    throw new Error(
-      `Tạo presigned URL thất bại: ${signedError?.message ?? 'không có token'}`
-    )
-  }
-
-  const { error: uploadError } = await client.storage
-    .from(BUCKET)
-    .uploadToSignedUrl(path, signed.token, file)
-
-  if (uploadError) {
-    throw new Error(`Upload thất bại: ${uploadError.message}`)
-  }
-
-  // `assets` là bucket public (chỉ admin được insert).
-  const url = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${path}`
-
-  return { path, url }
 }

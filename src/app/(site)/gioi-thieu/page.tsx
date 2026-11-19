@@ -7,6 +7,7 @@ import Link from 'next/link'
 
 import { SectionTitle } from '@/components/site/SectionTitle'
 import { Cards } from '@/components/site/Cards'
+import { Reveal } from '@/components/site/Reveal'
 import { getCategories, getGalleryImages, getSetting, type Category } from '@/lib/getProducts'
 
 export const metadata = {
@@ -38,7 +39,7 @@ export default async function GioiThieuPage() {
       {/* Hero nhỏ: giới thiệu shop */}
       <section className="section bg-[var(--color-tag-bg)]">
         <div className="container max-w-4xl text-center">
-          <h1 className="mb-6 text-4xl text-[var(--color-ink)]">Giới thiệu Tiệm Hoa Shop Flower</h1>
+          <h1 className="mb-6 text-[var(--color-ink)] leading-tight">Giới thiệu Tiệm Hoa Shop Flower</h1>
           <div className="text-sm leading-relaxed text-[var(--color-ink-light)]">
             {about.split('.').filter(Boolean).map((sentence, i) => (
               <p key={i} className="mb-3">
@@ -58,29 +59,37 @@ export default async function GioiThieuPage() {
             subtitle="Từ nguyên liệu tươi đến thiết kế chuyên nghiệp theo từng dịp."
             align="center"
           />
-          <Cards cols="grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+          <div className="flex flex-wrap justify-center gap-5">
             {categories.length > 0 ? (
-              categories.map((c) => (
-                <Link
+              categories.map((c, i) => (
+                <Reveal
                   key={c.id}
-                  href={`/bo-suu-tap?category=${c.slug}`}
-                  className="group relative block overflow-hidden rounded-xl border border-[var(--color-border)] bg-white p-6 text-center shadow-[var(--shadow-card)] transition-all hover:shadow-[var(--shadow-hover)] hover:-translate-y-1"
+                  delay={i * 70}
+                  className="w-full sm:w-[calc(50%_-_0.625rem)] md:w-[calc(33.333%_-_0.833rem)]"
                 >
-                  <span className="mb-3 block text-4xl">{CATEGORY_ICONS[c.slug] ?? '🌷'}</span>
-                  <h3 className="text-lg font-[var(--font-display)] font-medium text-[var(--color-ink)] group-hover:text-[var(--color-primary)]">
-                    {c.name.trim()}
-                  </h3>
-                  <p className="text-sm text-[var(--color-ink-light)]">
-                    Tìm theo <span className="font-medium text-[var(--color-primary)]">{c.name.trim()}</span>
-                  </p>
-                </Link>
+                  <Link
+                    href={`/bo-suu-tap?category=${c.slug}`}
+                    className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-white p-6 text-center shadow-[var(--shadow-card)] transition-all hover:shadow-[var(--shadow-hover)] hover:-translate-y-1"
+                  >
+                    <span className="mb-3 block flex-none text-3xl" aria-hidden="true">{CATEGORY_ICONS[c.slug] ?? '🌷'}</span>
+                    <h3 className="font-[var(--font-display)] font-medium text-[var(--color-ink)] group-hover:text-[var(--color-primary)]">
+                      {c.name.trim()}
+                    </h3>
+                    <p className="text-sm text-[var(--color-ink-light)]">
+                      Tìm theo <span className="font-medium text-[var(--color-primary)]">{c.name.trim()}</span>
+                    </p>
+                  </Link>
+                </Reveal>
               ))
             ) : (
               [...Array(3)].map((_, i) => (
-                <div key={i} className="rounded-xl border border-[var(--color-border)] bg-white p-6 shadow-[var(--shadow-card)] animate-pulse" />
+                <div
+                  key={i}
+                  className="w-full animate-pulse rounded-xl border border-[var(--color-border)] bg-white p-6 shadow-[var(--shadow-card)] sm:w-[calc(50%_-_0.625rem)] md:w-[calc(33.333%_-_0.833rem)]"
+                />
               ))
             )}
-          </Cards>
+          </div>
         </div>
       </section>
 
@@ -91,11 +100,11 @@ export default async function GioiThieuPage() {
             <SectionTitle label="Khoảnh khắc" title="Cận cảnh tiệm hoa" subtitle="Những khoảnh khắc đẹp của shop." align="center" />
             <Cards cols="grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {gallery.slice(0, 4).map((image) => (
-                <div key={image.id} className="relative aspect-[4/5] overflow-hidden rounded-xl shadow-[var(--shadow-card)]">
+                <div key={image.id} className="relative flex h-full flex-col overflow-hidden rounded-xl shadow-[var(--shadow-card)]">
                   <img
                     src={image.url}
                     alt={image.alt}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="h-full w-full flex-1 object-cover transition-transform duration-500 group-hover:scale-105"
                     width={400}
                     height={500}
                   />
@@ -117,7 +126,7 @@ export default async function GioiThieuPage() {
           />
           <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="rounded-xl border border-[var(--color-border)] bg-white p-6 shadow-[var(--shadow-card)]">
-              <h3 className="mb-4 text-lg font-[var(--font-display)] font-medium text-[var(--color-primary)]">Liên hệ</h3>
+              <h3 className="mb-4 text-[var(--color-primary)]">Liên hệ</h3>
               <ul className="space-y-3 text-sm text-[var(--color-ink-light)]">
                 <li><strong>Điện thoại:</strong> {phone || '0905.888.123'}</li>
                 <li><strong>Địa chỉ:</strong> {address}</li>
@@ -125,7 +134,7 @@ export default async function GioiThieuPage() {
               </ul>
             </div>
             <div className="rounded-xl border border-[var(--color-border)] bg-white p-6 shadow-[var(--shadow-card)]">
-              <h3 className="mb-4 text-lg font-[var(--font-display)] font-medium text-[var(--color-primary)]">Giờ mở cửa</h3>
+              <h3 className="mb-4 text-[var(--color-primary)]">Giờ mở cửa</h3>
               <p className="text-sm text-[var(--color-ink-light)]">{hours || 'Thứ Hai - Chủ Nhật: 08:00 - 21:00'}</p>
             </div>
           </div>

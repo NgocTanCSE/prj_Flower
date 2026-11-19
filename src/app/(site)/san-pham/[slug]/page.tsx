@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 import { SectionTitle } from '@/components/site/SectionTitle'
 import { Cards } from '@/components/site/Cards'
-import { Testimonials } from '@/components/site/Testimonials'
+import { TestimonialGrid } from '@/components/site/Testimonials'
 import { ProductCard } from '@/components/site/ProductCard'
 import {
   getFeaturedProducts,
@@ -89,50 +89,59 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          {/* Gallery */}
-          <div className="space-y-4">
-            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-gray-100 shadow-[var(--shadow-card)]">
-              <Image
-                src={mainImage?.url ?? 'https://images.unsplash.com/photo-1487530811176-3780de880c2d?auto=format&fit=crop&w=800&q=80'}
-                alt={mainImage?.alt ?? product.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              {product.featured_is && (
-                <span className="absolute top-4 left-4 rounded-full bg-[var(--color-tag-text)] px-3 py-1 text-sm font-semibold uppercase tracking-wide text-white shadow">
-                  Nổi bật
-                </span>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12">
+          {/* Gallery: ảnh chính + dải thumbnail dọc bên phải (desktop), ngang bên dưới (mobile). */}
+          <div className="lg:self-start">
+            <div
+              className={`grid gap-3 ${
+                images.length > 1 ? 'md:grid-cols-[minmax(0,1fr)_5rem] lg:grid-cols-[minmax(0,1fr)_6rem]' : ''
+              }`}
+            >
+              <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-[var(--color-bg-alt)] shadow-[var(--shadow-card)] lg:aspect-auto lg:h-[clamp(24rem,calc(100svh-var(--header-height)-7rem),42rem)]">
+                <Image
+                  src={mainImage?.url ?? 'https://images.unsplash.com/photo-1487530811176-3780de880c2d?auto=format&fit=crop&w=800&q=80'}
+                  alt={mainImage?.alt ?? product.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+                {product.featured_is && (
+                  <span className="absolute top-4 left-4 rounded-full bg-[var(--color-tag-text)] px-3 py-1 text-sm font-semibold uppercase tracking-wide text-white shadow">
+                    Nổi bật
+                  </span>
+                )}
+              </div>
+              {images.length > 1 && (
+                <div className="grid grid-cols-4 gap-3 md:grid-cols-1 md:content-start">
+                  {images.slice(0, 4).map((image) => (
+                    <div
+                      key={image.id}
+                      className="relative aspect-[4/5] overflow-hidden rounded-lg border-2 border-[var(--color-border)] md:aspect-square"
+                    >
+                      <Image
+                        src={image.url}
+                        alt={image.alt}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 25vw, 96px"
+                      />
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
-            {images.length > 1 && (
-              <div className="grid grid-cols-4 gap-3">
-                {images.slice(0, 4).map((image) => (
-                  <div key={image.id} className="relative aspect-[4/5] overflow-hidden rounded-lg border-2 border-[var(--color-border)]">
-                    <Image
-                      src={image.url}
-                      alt={image.alt}
-                      fill
-                      className="object-cover"
-                      sizes="25vw"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
-          {/* Info */}
-          <div className="space-y-6">
+          {/* Info — dính theo màn hình khi cuộn phần gallery bên trái. */}
+          <div className="space-y-6 lg:sticky lg:top-[calc(var(--header-height)+1.75rem)] lg:self-start lg:max-h-[calc(100svh-var(--header-height)-3.5rem)] lg:overflow-y-auto lg:[scrollbar-width:thin]">
             <div>
-              <h1 className="text-3xl font-[var(--font-display)] font-bold text-[var(--color-ink)]">{product.name}</h1>
+              <h1 className="font-[var(--font-display)] font-bold text-[var(--color-ink)] leading-tight">{product.name}</h1>
               {product.featured_is && (
                 <span className="text-sm font-medium text-[var(--color-success)]">Sản phẩm nổi bật</span>
               )}
             </div>
 
-            <div className="flex items-baseline gap-3">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <p className="text-2xl font-bold text-[var(--color-primary)]">{formatPrice(product.price)}</p>
               {product.old_price !== null && product.old_price > product.price && (
                 <p className="text-sm text-[var(--color-ink-lighter)] line-through">{formatPrice(product.old_price)}</p>
@@ -162,12 +171,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="grid gap-3 lg:grid-cols-2">
               <a
                 href={orderUrl(product.name)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-primary flex-1 rounded-full"
+                className="btn btn-primary w-full rounded-full"
               >
                 Đặt hoa qua Zalo
               </a>
@@ -175,7 +184,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 href="https://m.me/shopflower.vn"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-secondary flex-1 rounded-full"
+                className="btn btn-secondary w-full rounded-full"
               >
                 Nhắn Messenger
               </a>
@@ -198,7 +207,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               subtitle={`Những nhận xét về ${product.name}`}
               align="center"
             />
-            <Testimonials reviews={reviews} />
+            <TestimonialGrid reviews={reviews} />
           </div>
         </section>
       )}

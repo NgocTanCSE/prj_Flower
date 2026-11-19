@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { createAdminClient } from './auth'
 import { uploadFile } from './upload'
 import { logAudit } from '@/lib/upload'
+import { newBigIntId } from '@/lib/ids'
 import { slugify } from '@/lib/getProducts'
 
 // ---------------------------------------------------------------------------
@@ -199,6 +200,7 @@ export async function createProduct(formData: FormData): Promise<{ ok: boolean; 
   const { data: product, error } = await client
     .from('products')
     .insert({
+      id: newBigIntId(),
       ...rest,
       slug,
     })
@@ -212,6 +214,7 @@ export async function createProduct(formData: FormData): Promise<{ ok: boolean; 
   // Ảnh chính (is_primary = true) trong bảng `product_images`.
   if (imageUrl) {
     const { error: imgError } = await client.from('product_images').insert({
+      id: newBigIntId(),
       product_id: product.id,
       url: imageUrl,
       alt: parsed.data.name,
@@ -266,6 +269,7 @@ export async function updateProduct(formData: FormData): Promise<{ ok: boolean; 
       if (imgError) return { ok: false, error: `Cập nhật ảnh sản phẩm thất bại: ${imgError.message}` }
     } else {
       const { error: imgError } = await client.from('product_images').insert({
+        id: newBigIntId(),
         product_id: Number(id),
         url: imageUrl,
         alt: parsed.data.name,

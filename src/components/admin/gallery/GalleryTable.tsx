@@ -3,6 +3,8 @@
 import * as React from 'react'
 import type { GalleryImage } from '@/app/admin/(protected)/thu-vien/actions'
 import { deleteGalleryImage, updateGalleryImage } from '@/app/admin/(protected)/thu-vien/actions'
+import { notifyToast } from '@/components/admin/toast/toast'
+import { StableLabel } from '@/components/admin/StableLabel'
 
 export interface GalleryTableProps {
   images: GalleryImage[]
@@ -11,7 +13,6 @@ export interface GalleryTableProps {
 export function GalleryTable({ images }: GalleryTableProps) {
   const [filter, setFilter] = React.useState<'all' | 'visible' | 'hidden'>('all')
   const [busy, setBusy] = React.useState<string | null>(null)
-  const [message, setMessage] = React.useState<{ type: 'ok' | 'error'; text: string } | null>(null)
 
   const listed = images
     .filter((img) => {
@@ -22,14 +23,14 @@ export function GalleryTable({ images }: GalleryTableProps) {
     .sort((a, b) => a.sort_order - b.sort_order)
 
   async function handleDelete(id: string) {
+    if (!id) return
     setBusy(id)
-    setMessage(null)
     try {
       const res = await deleteGalleryImage(String(id))
-      if (res.ok) setMessage({ type: 'ok', text: 'Đã xóa ảnh khỏi thư viện' })
-      else setMessage({ type: 'error', text: res.error ?? 'Gặp lỗi.' })
+      if (res.ok) notifyToast('Đã xóa ảnh khỏi thư viện.', 'success')
+      else notifyToast(res.error ?? 'Gặp lỗi.', 'error')
     } catch (error) {
-      setMessage({ type: 'error', text: (error as Error).message })
+      notifyToast((error as Error).message, 'error')
     } finally {
       setBusy(null)
     }
@@ -39,25 +40,15 @@ export function GalleryTable({ images }: GalleryTableProps) {
     if (busy) return
     try {
       const res = await updateGalleryImage(String(id), { is_active })
-      if (res.ok) setMessage({ type: 'ok', text: is_active ? 'Đã hiển ảnh' : 'Đã ẩn ảnh' })
-      else setMessage({ type: 'error', text: res.error ?? 'Gặp lỗi.' })
+      if (res.ok) notifyToast(is_active ? 'Đã hiển ảnh.' : 'Đã ẩn ảnh.', 'success')
+      else notifyToast(res.error ?? 'Gặp lỗi.', 'error')
     } catch (error) {
-      setMessage({ type: 'error', text: (error as Error).message })
+      notifyToast((error as Error).message, 'error')
     }
   }
 
   return (
     <div className="space-y-4">
-      {message && (
-        <p className={`rounded-lg border px-3 py-1.5 text-sm ${
-          message.type === 'ok'
-            ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-            : 'border-red-200 bg-red-50 text-red-800'
-        }`}>
-          {message.text}
-        </p>
-      )}
-
       <div className="flex items-center gap-1 overflow-x-auto rounded-xl border border-[#e8e1e1] bg-[#fdfbfb] p-2">
         {(['all', 'visible', 'hidden'] as const).map((key) => {
           const active = filter === key
@@ -123,7 +114,7 @@ function GalleryCard({ image, busy, onToggle, onDelete }: GalleryCardProps) {
       </div>
       <figcaption className="p-4">
         <p className="line-clamp-2 text-sm">{image.alt || '-'}</p>
-        <p className="mt-2 flex items-center justify-between gap-3 text-[11px] text-[#999]">
+        <p className="mt-2 flex items-center justify-between gap-3 text-xs text-[#999]">
           <span>{image.category ? `Thể loại: ${image.category}` : 'Không có thể loại'}</span>
           <span className="font-medium">Thứ tự: {image.sort_order}</span>
         </p>
@@ -134,7 +125,9 @@ function GalleryCard({ image, busy, onToggle, onDelete }: GalleryCardProps) {
             className="rounded-lg border border-[#e8e1e1] bg-white px-3 py-1.5 text-sm text-[#5b5b5b]
               transition-colors hover:bg-[#f4eeef] hover:text-[#8b5f65] disabled:opacity-40"
           >
-            {image.is_active ? 'Ẩn' : 'Hiện lại'}
+            <StableLabel reserve="Hiện lại">
+              {image.is_active ? 'Ẩn' : 'Hiện lại'}
+            </StableLabel>
           </button>
           <button
             onClick={() => onDelete(String(image.id))}

@@ -1,34 +1,47 @@
 import { getStats } from '@/app/admin/api/actions/stats'
 import { HUDCard } from '@/components/admin/HUDCard'
+import { PageHeader } from '@/components/admin/PageHeader'
+import Link from 'next/link'
 
 export const metadata = {
   title: 'Thống kê | Quản trị',
   description: 'Thống kê truy cập, đánh giá, sản phẩm.',
 }
 
+const EMPTY_STATS = {
+  viewsTotal: 0,
+  totalProducts: 0,
+  productsActive: 0,
+  productsDraft: 0,
+  productsHidden: 0,
+  pendingReviews: 0,
+  totalReviews: 0,
+  totalGallery: 0,
+}
+
 export default async function ThongKePage() {
   let stats: Awaited<ReturnType<typeof getStats>>
+  let loadError: string | null = null
   try {
     stats = await getStats()
-  } catch {
-    stats = {
-      viewsTotal: 0,
-      totalProducts: 0,
-      productsActive: 0,
-      productsDraft: 0,
-      productsHidden: 0,
-      pendingReviews: 0,
-      totalReviews: 0,
-      totalGallery: 0,
-    }
+  } catch (error) {
+    // Không nuốt lỗi: vẫn render số liệu 0 + banner báo lỗi rõ nguyên nhân.
+    stats = { ...EMPTY_STATS }
+    loadError = error instanceof Error ? error.message : 'Không thể tải thống kê.'
   }
 
   return (
-    <main className="mx-auto max-w-6xl py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[#1a1a1a]">Thống kê</h1>
-        <p className="text-sm text-[#5b5b5b]">Số liệu trang web hôm nay.</p>
-      </div>
+    <div className="admin-content">
+      <PageHeader
+        title="Thống kê"
+        subtitle="Số liệu trang web hôm nay."
+      />
+
+      {loadError ? (
+        <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <strong>Lỗi tải thống kê:</strong> {loadError}
+        </div>
+      ) : null}
 
       <div className="mb-8 grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-6">
         <HUDCard
@@ -70,7 +83,7 @@ export default async function ThongKePage() {
       </div>
 
       {/* Tổng quan */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="rounded-xl border border-[#e8e1e1] bg-white p-6">
           <h2 className="mb-4 text-lg font-semibold text-[#1a1a1a]">Tổng quan sản phẩm</h2>
           <div className="flex flex-col gap-4">
@@ -89,26 +102,40 @@ export default async function ThongKePage() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-[#e8e1e1] bg-white p-6">
+        <div className="flex flex-col rounded-xl border border-[#e8e1e1] bg-white p-6">
           <h2 className="mb-4 text-lg font-semibold text-[#1a1a1a]">Đánh giá chờ duyệt</h2>
-          <div className="flex flex-col items-center justify-center gap-4 py-8">
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 py-8">
             <span className="text-4xl font-bold text-[#8b5f65]">{stats.pendingReviews}</span>
-            <p className="text-sm text-[#5b5b5b]">
+            <p className="text-center text-sm text-[#5b5b5b]">
               {stats.pendingReviews === 0
                 ? 'Không có đánh giá nào cần duyệt.'
                 : `Bạn cần duyệt ${stats.pendingReviews} đánh giá đã ẩn.`}
             </p>
           </div>
           <div className="mt-4 text-center">
-            <a
+            <Link
               href="/admin/danh-gia"
-              className="text-sm font-medium text-[#8b5f65] hover:underline"
+              className="text-sm font-medium text-[#8b5f65] transition-colors hover:underline"
             >
               Xem tất cả đánh giá
-            </a>
+            </Link>
+          </div>
+        </div>
+
+        <div className="flex flex-col rounded-xl border border-[#e8e1e1] bg-white p-6">
+          <h2 className="mb-4 text-lg font-semibold text-[#1a1a1a]">Lượt truy cập &amp; thư viện</h2>
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 py-8">
+            <span className="text-4xl font-bold text-[#8b5f65]">
+              {stats.viewsTotal.toLocaleString('vi-VN')}
+            </span>
+            <p className="text-center text-sm text-[#5b5b5b]">Lượt xem tích lũy (90 ngày qua).</p>
+          </div>
+          <div className="mt-4 flex items-center justify-between rounded-lg border border-[#e8e1e1] bg-[#faf5fa] px-4 py-3 text-sm text-[#5b5b5b]">
+            <span>Ảnh trong thư viện</span>
+            <span className="font-bold text-[#1a1a1a]">{stats.totalGallery}</span>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

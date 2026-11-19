@@ -24,8 +24,8 @@ export function ProductCard({ product, showBadge = true }: ProductCardProps) {
   const priceText = formatPrice(product.price);
 
   return (
-    <article className="group relative bg-white rounded-lg border border-[var(--color-border)] overflow-hidden shadow-[var(--shadow-card)] transition-all hover:shadow-[var(--shadow-hover)] hover:-translate-y-1">
-      <div className="relative aspect-[4/5] bg-[var(--color-bg-alt)]">
+    <article className="group relative flex h-full flex-col bg-white rounded-lg border border-[var(--color-border)] overflow-hidden shadow-[var(--shadow-card)] transition-all hover:shadow-[var(--shadow-hover)] hover:-translate-y-1">
+      <div className="relative aspect-[4/5] flex-none bg-[var(--color-bg-alt)]">
         <Image
           src={imageSrc}
           alt={product.name}
@@ -41,14 +41,14 @@ export function ProductCard({ product, showBadge = true }: ProductCardProps) {
         )}
       </div>
 
-      <div className="p-4 flex flex-col gap-3">
-        <h3 className="text-[1.25rem] font-[var(--font-display)] leading-tight">
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        <h3 className="font-[var(--font-display)] leading-tight">
           <Link href={`/san-pham/${product.slug}`} className="hover:text-[var(--color-primary)]">
             {product.name}
           </Link>
         </h3>
         {description.length > 0 && <p className="text-sm text-[var(--color-ink-light)]">{description}</p>}
-        <div className="flex items-baseline gap-2">
+        <div className="mt-auto flex items-baseline gap-2">
           <p className="text-base font-semibold text-[var(--color-primary)]">{priceText}</p>
           {product.old_price !== null && product.old_price > product.price && (
             <p className="text-sm text-[var(--color-ink-lighter)] line-through">{formatPrice(product.old_price)}</p>

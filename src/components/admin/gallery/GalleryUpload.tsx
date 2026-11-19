@@ -1,8 +1,12 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 import { addGalleryImage } from '@/app/admin/(protected)/thu-vien/actions'
+import { notifyToast } from '@/components/admin/toast/toast'
+import { StableLabel } from '@/components/admin/StableLabel'
+import { COMPRESS_PRESETS, compressImage, formatBytes } from '@/lib/image-compress'
 
 export interface GalleryUploadProps {
   /** Các thể loại (danh mục) cho ảnh gallery. */
@@ -10,20 +14,35 @@ export interface GalleryUploadProps {
 }
 
 export function GalleryUpload({ categories }: GalleryUploadProps) {
+  const router = useRouter()
   const [pending, setPending] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [message, setMessage] = useState<string | null>(null)
 
   const handleGallerySubmit = async (formData: FormData) => {
     setPending(true)
-    setError(null)
-    setMessage(null)
 
     try {
-      await addGalleryImage(formData)
-      setMessage('Đã thêm ảnh vào thư viện.')
+      // Nén ảnh ngay trên trình duyệt trước khi gửi lên server (tiết kiệm
+      // storage Supabase + băng thông). Lỗi nén → dùng file gốc.
+      let note = ''
+      const raw = formData.get('file')
+      if (raw instanceof File && raw.size > 0) {
+        const compressed = await compressImage(raw, COMPRESS_PRESETS.gallery)
+        formData.set('file', compressed.file)
+        if (compressed.compressed) {
+          note = ` (đã nén ${formatBytes(compressed.originalSize)} → ${formatBytes(compressed.size)})`
+        }
+      }
+
+      const res = await addGalleryImage(formData)
+      if (res.ok) {
+        notifyToast(`Đã thêm ảnh vào thư viện.${note}`, 'success')
+        // Làm mới RSC payload để lưới ảnh cập nhật ngay (kèm revalidate server).
+        router.refresh()
+      } else {
+        notifyToast(res.error ?? 'Thêm ảnh thất bại.', 'error')
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Thêm ảnh thất bại.')
+      notifyToast(err instanceof Error ? err.message : 'Thêm ảnh thất bại.', 'error')
     } finally {
       setPending(false)
     }
@@ -40,7 +59,7 @@ export function GalleryUpload({ categories }: GalleryUploadProps) {
               name="file"
               accept="image/*"
               required
-              className="w-full rounded-lg border border-[#e8e1e1] bg-white px-3 py-2 text-sm outline-none
+              className="w-full rounded-lg border border-[#e8e1e1] bg-white px-3 py-2 text-sm outline-none transition-colors
                 file:mr-4 file:rounded-lg file:border file:border-[#e8e1e1] file:bg-[#f4eeef]
                 file:px-3 file:py-1 file:text-sm file:font-medium file:text-[#8b5f65]"
             />
@@ -52,7 +71,7 @@ export function GalleryUpload({ categories }: GalleryUploadProps) {
               type="text"
               name="alt"
               placeholder="Tên ảnh, mô tả ngắn..."
-              className="w-full rounded-lg border border-[#e8e1e1] bg-white px-3 py-2 text-sm outline-none
+              className="w-full rounded-lg border border-[#e8e1e1] bg-white px-3 py-2 text-sm outline-none transition-colors
                 focus:ring-2 focus:ring-[#8b5f65]"
             />
           </div>
@@ -61,7 +80,7 @@ export function GalleryUpload({ categories }: GalleryUploadProps) {
             <label className="mb-1 block text-sm font-medium text-[#5b5b5b]">Thể loại</label>
             <select
               name="category"
-              className="w-40 rounded-lg border border-[#e8e1e1] bg-white px-3 py-2 text-sm outline-none
+              className="w-40 rounded-lg border border-[#e8e1e1] bg-white px-3 py-2 text-sm outline-none transition-colors
                 focus:ring-2 focus:ring-[#8b5f65]"
             >
               <option value="">-- Không --</option>
@@ -80,7 +99,7 @@ export function GalleryUpload({ categories }: GalleryUploadProps) {
               name="sort_order"
               defaultValue={999}
               min={0}
-              className="w-20 rounded-lg border border-[#e8e1e1] bg-white px-3 py-2 text-sm outline-none
+              className="w-20 rounded-lg border border-[#e8e1e1] bg-white px-3 py-2 text-sm outline-none transition-colors
                 focus:ring-2 focus:ring-[#8b5f65]"
             />
           </div>
@@ -89,19 +108,14 @@ export function GalleryUpload({ categories }: GalleryUploadProps) {
             type="submit"
             disabled={pending}
             className="shrink-0 rounded-lg bg-[#8b5f65] px-5 py-2 text-sm text-white transition-colors
-              hover:bg-[#764f54] disabled:cursor-not-allowed disabled:opacity-60"
+              hover:bg-[#764f54] disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.97]"
           >
-            {pending ? 'Đang tải lên...' : 'Thêm ảnh'}
+            <StableLabel reserve="Đang xử lý...">
+              {pending ? 'Đang xử lý...' : 'Thêm ảnh'}
+            </StableLabel>
           </button>
         </div>
       </form>
-
-      {message && <p className="text-sm font-medium text-green-700">{message}</p>}
-      {error && (
-        <p className="text-sm font-medium text-red-600" role="alert">
-          {error}
-        </p>
-      )}
     </div>
   )
 }

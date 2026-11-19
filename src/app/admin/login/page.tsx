@@ -1,6 +1,6 @@
 'use client'
 
-import { useFormState } from 'react-dom'
+import { useActionState } from 'react'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -9,7 +9,7 @@ import { login } from '@/app/(auth)/actions'
 import { AuthForm, AuthShell } from '@/app/(auth)/components/auth-shell'
 
 export default function AdminLogin() {
-  const [state, formAction] = useFormState(login, { error: undefined, redirect: undefined })
+  const [state, formAction] = useActionState(login, { error: undefined, redirect: undefined })
   const router = useRouter()
 
   useEffect(() => {

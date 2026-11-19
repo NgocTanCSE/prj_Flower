@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createSupabaseServerClient, logAudit } from '@/lib/upload'
+import { newBigIntId } from '@/lib/ids'
 
 // ---------------------------------------------------------------------------
 // Bảng `reviews` (0001_init.sql):
@@ -66,11 +67,12 @@ const STATUS_ACTION: Record<ReviewStatus, 'approved' | 'rejected' | 'pending'> =
 export async function createReview(formData: FormData): Promise<{ ok: boolean; error?: string }> {
   const { client } = await requireAdmin()
 
-  const customer_name = formData.get('customer_name') as string
-  const customer_email = formData.get('customer_email') as string
+  const customer_name = String(formData.get('customer_name') ?? '')
+  const customer_email = String(formData.get('customer_email') ?? '')
   const product_id = Number(formData.get('product_id'))
   const rating = Number(formData.get('rating'))
-  const comment = formData.get('comment') as string
+  // Cột `comment` là NOT NULL: gửi chuỗi rỗng thay vì null khi bỏ trống.
+  const comment = String(formData.get('comment') ?? '')
 
   if (!product_id || !rating) {
     return { ok: false, error: 'Vui lòng chọn sản phẩm và xếp sao.' }
@@ -80,6 +82,7 @@ export async function createReview(formData: FormData): Promise<{ ok: boolean; e
   }
 
   const { error } = await client.from('reviews').insert({
+    id: newBigIntId(),
     customer_name,
     customer_email,
     product_id,

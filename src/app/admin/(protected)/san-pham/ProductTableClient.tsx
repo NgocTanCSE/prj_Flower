@@ -8,12 +8,15 @@
 
 import { Button } from '@/components/admin/Button'
 import { ConfirmModal } from '@/components/admin/ConfirmModal'
+import { StableLabel } from '@/components/admin/StableLabel'
 import { Table } from '@/components/admin/Table'
 import { deleteProduct, toggleProductPublish } from '@/app/admin/api/actions/products'
 import type { Category } from '@/app/admin/api/actions/categories'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { Product } from '@/app/admin/api/actions/products'
+import { notifyToast } from '@/components/admin/toast/toast'
 
 interface ProductTableClientProps {
   products: Product[]
@@ -32,6 +35,7 @@ const headers = [
 ]
 
 export function ProductTableClient({ products: _products, categories }: ProductTableClientProps) {
+  const router = useRouter()
   const [term, setTerm] = useState('')
   const [confirm, setConfirm] = useState<null | string>(null)
   const [pending, setPending] = useState<string | null>(null)
@@ -39,12 +43,17 @@ export function ProductTableClient({ products: _products, categories }: ProductT
   /** Tên danh mục theo `category_id`. */
   const categoryName = (id: number) => categories.find((c) => c.id === id)?.name ?? '-'
 
-/** Định dạng hàng (cột bổ sung cho bảng). */
+  /** Cập nhật lại danh sách sau mỗi mutate (đồng bộ với revalidate server). */
+  function refreshData() {
+    router.refresh()
+  }
+
+  /** Định dạng hàng (cột bổ sung cho bảng). */
   const row = (r: Product) =>
     ({
       ...r,
       category_name: categoryName(r.category_id),
-      price: `${(r.price as number).toLocaleString('vi-VN')}đ`,
+      price: `${Number(r.price).toLocaleString('vi-VN')}đ`,
       featured_is: r.featured_is ? '⭐' : '-',
       updated_at: new Date(r.updated_at).toLocaleDateString('vi-VN'),
     }) as Record<string, unknown>
@@ -58,35 +67,44 @@ export function ProductTableClient({ products: _products, categories }: ProductT
 
   const handlePublish = async (id: string) => {
     setPending(id)
-    const res = await toggleProductPublish(id)
-    setPending(null)
-    if (!res.ok) alert(res.error)
+    try {
+      const res = await toggleProductPublish(id)
+      if (res.ok) {
+        notifyToast('Cập nhật trạng thái thành công.', 'success')
+        refreshData()
+      } else {
+        notifyToast(res.error ?? 'Gặp lỗi.', 'error')
+      }
+    } catch (error) {
+      notifyToast((error as Error).message, 'error')
+    } finally {
+      setPending(null)
+    }
   }
 
   const handleDelete = async (id: string) => {
-    const res = await deleteProduct(id)
-    if (!res.ok) alert(res.error)
+    try {
+      const res = await deleteProduct(id)
+      if (res.ok) {
+        notifyToast('Đã ẩn sản phẩm khỏi công khai.', 'success')
+        refreshData()
+      } else {
+        notifyToast(res.error ?? 'Gặp lỗi.', 'error')
+      }
+    } catch (error) {
+      notifyToast((error as Error).message, 'error')
+    }
   }
 
   return (
-    <main>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-[#1a1a1a]">Sản phẩm</h1>
-          <p className="text-sm text-[#5b5b5b]">{_products.length} sản phẩm</p>
-        </div>
-        <Button variant="primary">
-          <Link href="/admin/san-pham/new">+ Thêm sản phẩm</Link>
-        </Button>
-      </div>
-
-      <div className="mb-6 flex gap-3">
+    <div className="space-y-6">
+      <div>
         <input
           type="text"
           value={term}
           onChange={(e) => setTerm(e.target.value)}
           placeholder="Tìm theo tên / slug..."
-          className="flex-1 rounded-lg border border-[#e8e1e1] px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#8b5f65]/40"
+          className="w-full rounded-lg border border-[#e8e1e1] px-3 py-2 text-sm outline-none transition-colors focus:ring-2 focus:ring-[#8b5f65]/40"
         />
       </div>
 
@@ -107,7 +125,10 @@ export function ProductTableClient({ products: _products, categories }: ProductT
               onClick={() => handlePublish(String(r.id))}
               disabled={!!pending}
             >
-              {pending === String(r.id) ? 'Đang tải' : r.status === 'draft' ? 'Công bố' : 'Hủy'}
+              {/* Nhãn dài nhất là "Công bố" → nút không đổi bề rộng. */}
+              <StableLabel reserve="Công bố">
+                {pending === String(r.id) ? 'Đang tải' : r.status === 'draft' ? 'Công bố' : 'Hủy'}
+              </StableLabel>
             </button>
             <button
               className="rounded-lg border border-red-200 bg-white px-3 py-1.5 text-sm text-red-700 transition-colors
@@ -130,6 +151,6 @@ export function ProductTableClient({ products: _products, categories }: ProductT
         confirmLabel="Ẩn"
         danger
       />
-    </main>
+    </div>
   )
 }

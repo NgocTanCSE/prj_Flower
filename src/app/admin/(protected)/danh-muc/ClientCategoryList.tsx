@@ -11,6 +11,7 @@ import { Table } from '@/components/admin/Table'
 import { createCategory, deleteCategory, getCategories } from '@/app/admin/api/actions/categories'
 import type { Category } from '@/app/admin/api/actions/categories'
 import React, { useEffect, useState } from 'react'
+import { notifyToast } from '@/components/admin/toast/toast'
 
 interface ClientCategoryListProps {
   categories: Category[]
@@ -44,12 +45,17 @@ export function ClientCategoryList({ categories: _categories }: ClientCategoryLi
     const formData = new FormData(e.currentTarget)
     // Active checkbox: `'on'` nếu checked.
     formData.set('active', 'on')
-    const res = await createCategory(formData)
-    if (res.ok) {
-      setShowCreate(false)
-      setUpdated(true)
-    } else {
-      alert(res.error ?? 'Tạo danh mục thất bại.')
+    try {
+      const res = await createCategory(formData)
+      if (res.ok) {
+        notifyToast('Đã tạo danh mục mới.', 'success')
+        setShowCreate(false)
+        setUpdated(true)
+      } else {
+        notifyToast(res.error ?? 'Tạo danh mục thất bại.', 'error')
+      }
+    } catch (error) {
+      notifyToast((error as Error).message, 'error')
     }
   }
 
@@ -57,8 +63,12 @@ export function ClientCategoryList({ categories: _categories }: ClientCategoryLi
     if (!confirm) return
     const res = await deleteCategory(confirm)
     setConfirm(null)
+    if (res.ok) {
+      notifyToast('Đã xóa danh mục.', 'success')
+    } else {
+      notifyToast(res.error ?? 'Xóa danh mục thất bại.', 'error')
+    }
     setUpdated(true)
-    void res
   }
 
   const filtered = categories
@@ -68,7 +78,7 @@ export function ClientCategoryList({ categories: _categories }: ClientCategoryLi
     .map((c) => ({ ...c }) as Record<string, unknown>)
 
   return (
-    <main className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6">
       {/* ---- Search + Create ---- */}
       <div className="flex flex-wrap items-end gap-3">
         <input
@@ -126,6 +136,6 @@ export function ClientCategoryList({ categories: _categories }: ClientCategoryLi
         confirmLabel="Xóa"
         danger
       />
-    </main>
+    </div>
   )
 }

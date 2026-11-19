@@ -1,13 +1,13 @@
 'use client'
 
-import { useFormState } from 'react-dom'
+import { useActionState } from 'react'
 import Link from 'next/link'
 
 import { sendResetPassword } from '@/app/(auth)/actions'
 import { AuthForm, AuthShell } from '@/app/(auth)/components/auth-shell'
 
 export default function ForgotPassword() {
-  const [state, formAction] = useFormState(sendResetPassword, {})
+  const [state, formAction] = useActionState(sendResetPassword, {})
 
   return (
     <AuthShell

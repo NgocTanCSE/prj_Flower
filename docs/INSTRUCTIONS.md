@@ -9,6 +9,9 @@ Kiến trúc A - **SSR qua Supabase (hầu hết logic nằm ở RLS & Supabase 
 - FE: Next.js 15 App Router, TypeScript, TailwindCSS
 - BE: Supabase Postgres (PostgREST API), Supabase Auth (Login), Supabase Storage (Ảnh)
 - Deploy: Cloudflare Workers (@opennextjs/cloudflare) + Supabase (miễn phí)
+- Production: https://prj-flower.flowershop.workers.dev
+- Build/run: `opennextjs-cloudflare build` → `.open-next/worker.js` + `.open-next/assets`
+- Cloudflare Access/Zero Trust: không bật cho site public; auth do Supabase + middleware
 - Admin panel: `/admin`, login từ Supabase Auth, session cookie
 -教徒: sản phẩm, danh mục, đánh giá, thư viện ảnh, cài đặt site, tin nhắn
 

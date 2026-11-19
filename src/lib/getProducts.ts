@@ -117,7 +117,31 @@ export const SETTING_KEYS: Record<string, string> = {
   site_theme_body: 'Màu chữ chính (hex)',
   shop_hero_title: 'Tiêu đề banner trang chủ',
   shop_hero_subtitle: 'Phụ đề banner trang chủ',
+  shop_hero_enabled: 'Hiển thị banner trang chủ',
+  shop_hero_image_url: 'Ảnh nền banner (URL)',
+  hero_panel_count: 'Số ảnh decor hero (2-5)',
 }
+
+/**
+ * Giá trị mặc định khi một cài đặt chưa có trong DB hoặc đang để trống.
+ *
+ * Dùng chung cho Root Layout (màu/logo/favicon) và trang Cài đặt admin để
+ * "giá trị hiện tại" luôn hiển thị đúng thay vì ô trống. Trước đây form đọc
+ * thẳng DB nên khi thiếu key (chưa chạy 0002) ô màu trống, chỉ còn placeholder
+ * trùng nhãn — admin không biết màu nào đang được áp dụng.
+ */
+export const SETTING_DEFAULTS: Record<string, string> = {
+  shop_logo_url: '',
+  shop_favicon_url: '/favicon.svg',
+  site_theme_primary: '#8b5f65',
+  site_theme_body: '#1a1a1a',
+  shop_hero_title: 'Bó hoa đẹp cho bạn yêu thương',
+  shop_hero_subtitle: 'Những bó hoa được chọn lọc trong ngày',
+  hero_panel_count: '3',
+}
+
+/** Hai khóa màu của theme (dùng cho bảng chọn màu + validation hex). */
+export const COLOR_SETTING_KEYS = ['site_theme_primary', 'site_theme_body'] as const
 
 /** Các khoảng sắp xếp được cho phép ở bộ sưu tập. */
 export type ProductSort = 'newest' | 'popular' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc'
@@ -146,15 +170,11 @@ export interface ProductListResult {
 // ---------------------------------------------------------------------------
 
 /** Tự động sinh slug cho URL `/san-pham/[slug]` từ tên sản phẩm. */
-export function slugify(text: string): string {
-  return text
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-}
+/**
+ * Sinh slug URL thân thiện (giữ export cũ để không phá vỡ import hiện có).
+ * Triển khai nằm ở `src/lib/slug.ts` (module thuần, dùng được ở client).
+ */
+export { slugify } from './slug'
 
 /** Số lượng sản phẩm hiển thị mỗi trang. */
 const PAGE_SIZE = 8

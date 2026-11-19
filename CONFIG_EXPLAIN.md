@@ -100,8 +100,11 @@ if (pathname.startsWith('/admin')) {
 
 ## 6. Deploy Cloudflare Workers (OpenNext)
 
-- `wrangler.jsonc`: Worker `prj-flower`, static assets trong `.open-next/assets`.
-- `open-next.config.ts`: cấu hình tối giản, không bật R2/D1.
+- Production URL: **https://prj-flower.flowershop.workers.dev**
+- Worker: `prj-flower`, chạy trên Cloudflare Workers.
+- Build: `opennextjs-cloudflare build` → `.open-next/worker.js` + `.open-next/assets`.
+- `wrangler.jsonc`: static assets trong `.open-next/assets`.
+- `open-next.config.ts`: cấu hình tối giản, không bật R2/D1/Durable Objects.
 - `public/_headers`: cache `/_next/static/*` với `immutable`.
 - Security headers (`X-Frame-Options`, ...): `next.config.mjs` → `headers()`.
 
@@ -112,9 +115,20 @@ npm run upload    # build + upload version
 npm run cf-typegen
 ```
 
-Biến môi trường trên Cloudflare Dashboard:
+Phân biệt build-time và runtime:
 
-- Build-time: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SITE_URL`
-- Runtime: các biến trên + `SUPABASE_SERVICE_KEY` (secret), `ADMIN_EMAIL`
+- Build-time, đọc từ `.env.local` khi deploy từ máy:
+  `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SITE_URL`.
+- Runtime secrets/vars trên Worker:
+  `SUPABASE_SERVICE_KEY` (secret), `ADMIN_EMAIL`, `SITE_URL`.
+- `NEXT_PUBLIC_*` được inline vào bundle lúc build.
+- Không đặt `SUPABASE_SERVICE_KEY` trong `.env.local`; dùng
+  `npx wrangler secret put SUPABASE_SERVICE_KEY`.
+
+### Cloudflare Access / Zero Trust
+
+Không cần bật cho dự án này. Access là lớp đăng nhập bổ sung trước toàn bộ
+Worker; nếu bật cho site public, khách sẽ bị chặn trước khi vào web. App đã tự
+bảo vệ `/admin` bằng Supabase Auth + `middleware.ts`.
 
 Tất cả route (site + admin) cùng 1 Worker, cùng 1 domain.

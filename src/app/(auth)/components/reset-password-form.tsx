@@ -2,13 +2,13 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useFormState } from 'react-dom'
+import { useActionState } from 'react'
 
 import { resetPassword } from '@/app/(auth)/actions'
 import { AuthForm } from '@/app/(auth)/components/auth-shell'
 
 export function ResetPasswordForm({ code }: { code: string }) {
-  const [state, formAction] = useFormState(resetPassword, {})
+  const [state, formAction] = useActionState(resetPassword, {})
   const router = useRouter()
 
   useEffect(() => {

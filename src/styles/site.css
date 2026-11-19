@@ -20,6 +20,9 @@
     --color-ink: #1a1a1a;
     --color-ink-light: #5b5b5b;
     --color-ink-lighter: #999999;
+    --color-bg-alt: #f7f1f2;
+    --color-primary-dark: #6a454b;
+    --color-primary-soft: rgba(139, 95, 101, 0.10);
     --color-page: #fdfbfb;
     --color-card: #ffffff;
     --color-border: #e8e1e1;
@@ -36,6 +39,10 @@
     --shadow-card: 0 8px 24px rgba(92, 58, 64, 0.08);
     --shadow-hover: 0 12px 32px rgba(92, 58, 64, 0.12);
     --header-height: 4.5rem;
+    /* Bề rộng tối đa vùng nội dung: đủ rộng để lấp đầy màn hình lớn
+     * nhưng vẫn giữ khoảng thở hai bên để dễ đọc. */
+    --container-max: 1400px;
+    --section-gap: clamp(3.5rem, 5.5vw, 5.5rem);
   }
 
   html {
@@ -45,8 +52,8 @@
 
   body {
     font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.65;
+    font-size: 1rem;
+    line-height: 1.7;
     color: var(--color-ink);
     background: var(--color-ink-gradient);
     -webkit-font-smoothing: antialiased;
@@ -60,21 +67,38 @@
   h4 {
     font-family: var(--font-display);
     font-weight: 600;
-    line-height: 1.15;
+    line-height: 1.12;
     color: var(--color-ink);
     margin: 0 0 0.75rem;
   }
 
+  h1,
+  h2,
+  h3 {
+    /* Tránh chữ mồ côi & dòng quá ngắn trên tiêu đề lớn. */
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
   h1 {
-    font-size: clamp(2.2rem, 1.7rem + 2.4vw, 3.6rem);
+    font-size: clamp(2.6rem, 2rem + 2.4vw, 4.4rem);
   }
 
   h2 {
-    font-size: clamp(1.6rem, 1.3rem + 1.4vw, 2.3rem);
+    font-size: clamp(1.9rem, 1.35rem + 1.7vw, 2.75rem);
   }
 
   h3 {
-    font-size: clamp(1.15rem, 1.05rem + 0.6vw, 1.45rem);
+    font-size: clamp(1.125rem, 1.02rem + 0.4vw, 1.3rem);
+  }
+
+  h4 {
+    font-size: 0.875rem;
+    font-family: var(--font-body);
+    font-weight: 600;
   }
 
   img {
@@ -92,7 +116,7 @@
 
 @layer components {
   .container {
-    width: var(--container, min(1120px, calc(100% - 2rem)));
+    width: var(--container, min(var(--container-max, 1400px), calc(100% - clamp(2rem, 8vw, 4rem))));
     margin-inline: auto;
   }
 
@@ -115,17 +139,36 @@
   }
 
   .section {
-    padding: clamp(3.5rem, 6vw, 5.5rem) 0;
+    padding: var(--section-gap) 0;
   }
 
   .section-head {
-    max-width: 42rem;
-    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    max-width: 44rem;
+    margin-bottom: clamp(1.75rem, 3vw, 2.75rem);
   }
 
   .section-head p {
     color: var(--color-ink-light);
     margin: 0;
+  }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 1.75rem;
+    height: 1.5px;
+    background: currentColor;
+    opacity: 0.55;
   }
 
   .btn {
@@ -164,14 +207,14 @@
   }
 
   .btn-secondary {
-    background: rgba(255, 255, 255, 0.92);
-    color: var(--color-primary-hover);
-    border-color: rgba(255, 255, 255, 0.92);
+    background: #ffffff;
+    color: var(--color-primary);
+    border-color: var(--color-border);
   }
 
   .btn-secondary:hover {
-    background: #ffffff;
-    color: #8f475c;
+    background: var(--color-tag-bg);
+    border-color: var(--color-primary);
   }
 
   .btn-ghost {
@@ -192,5 +235,233 @@
 
   .btn-block {
     width: 100%;
+  }
+
+  /* ---- Ô nhập liệu dùng chung cho site (lọc, đăng ký nhận tin…) ------- */
+  .field {
+    width: 100%;
+    min-height: 2.85rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--color-border);
+    background: #ffffff;
+    padding: 0.6rem 1.1rem;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--color-ink);
+    transition:
+      border-color 0.18s ease,
+      box-shadow 0.18s ease,
+      background-color 0.18s ease;
+  }
+
+  .field::placeholder {
+    color: var(--color-ink-lighter);
+  }
+
+  .field:hover {
+    border-color: var(--color-primary-light);
+  }
+
+  .field:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-soft);
+  }
+
+  /* Ô `<select>`: bỏ mũi tên mặc định của hệ điều hành, dùng caret riêng. */
+  .field-select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 2.6rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b5f65' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 0.95rem;
+    cursor: pointer;
+  }
+}
+
+/* ======================================================================
+ * Admin shell (/admin/*)
+ *
+ * `@layer base` phía trên gán Cormorant Garamond + clamp() cho TẤT CẢ h1–h4.
+ * Ở admin điều này khiến tiêu đề "cái to cái nhỏ" tùy vào chỗ nào có hay
+ * không có utility class. Các rule dưới đây (specificty 0,1,1 > utility
+ * 0,1,0) chuẩn hóa lại: font Be Vietnam Pro cho heading, h1 cố định 1.5rem,
+ * margin/line-height thống nhất. Chỉ áp trong `.admin-shell`.
+ * ==================================================================== */
+
+.admin-shell h1 {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.admin-shell h2,
+.admin-shell h3,
+.admin-shell h4 {
+  font-family: var(--font-body);
+  line-height: 1.3;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+/* Tiêu đề trang thống nhất: hiện lên mượt khi mount. */
+.admin-page-title {
+  display: block;
+  animation: reveal-up 0.5s ease-out;
+}
+
+/* Vùng nội dung chính của mọi trang admin.
+ * Thay thế class rải rác `space-y-6 py-8` trước đây — tránh double-padding
+ * với main (mt-14/pb-10). Nội dung chiếm TRỌN không gian còn lại sau sidebar
+ * (không còn giới hạn 64rem như trước) để bảng/nhóm cài đặt hiển thị đầy đủ,
+ * dễ quét trên màn hình lớn. */
+.admin-content {
+  width: 100%;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 2.5rem;
+}
+
+/* ConfirmModal: backdrop fade + card scale-in. */
+.admin-modal-backdrop {
+  animation: fade-in 0.18s ease-out;
+}
+
+.admin-modal-card {
+  animation: modal-in 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Tôn trọng người dùng chọn giảm chuyển động. */
+@media (prefers-reduced-motion: reduce) {
+  .admin-page-title,
+  .admin-modal-backdrop,
+  .admin-modal-card,
+  [class*='toast'] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Header                                                              */
+/* ------------------------------------------------------------------ */
+
+.header {
+  transition:
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.header.is-scrolled {
+  box-shadow: 0 4px 20px rgba(92, 58, 64, 0.10);
+}
+
+.mobile-menu {
+  transition:
+    opacity 0.35s ease,
+    max-height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.45s ease;
+}
+
+/* ------------------------------------------------------------------ */
+/* Scroll reveal (IntersectionObserver, giảm chuyển động nếu cần)      */
+/* ------------------------------------------------------------------ */
+
+.reveal {
+  --reveal-delay: 0ms;
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero entrance */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-anim {
+  animation: hero-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Floating décor circles */
+.hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2rem);
+  opacity: 0.7;
+  animation: hero-float 9s ease-in-out infinite;
+}
+
+.hero-glow--1 {
+  width: 22rem;
+  height: 22rem;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.35) 0%, transparent 70%);
+  top: 8%;
+  right: -6%;
+  animation-delay: 0s;
+}
+
+.hero-glow--2 {
+  width: 14rem;
+  height: 14rem;
+  background: radial-gradient(circle, rgba(139, 95, 101, 0.35) 0%, transparent 70%);
+  bottom: 12%;
+  left: -4%;
+  animation-delay: -4.5s;
+}
+
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-18px) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .hero-anim,
+  .hero-glow {
+    opacity: 1;
+    transform: none;
+    animation: none;
+    transition: none;
   }
 }

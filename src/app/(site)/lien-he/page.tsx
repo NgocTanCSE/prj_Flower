@@ -50,9 +50,9 @@ export default async function LienHePage() {
             {/* Thông tin */}
             <div className="space-y-6">
               <div className="rounded-xl border border-[var(--color-border)] bg-white p-6 shadow-[var(--shadow-card)] space-y-4">
-                <h2 className="text-lg font-[var(--font-display)] font-medium text-[var(--color-ink)]">
+                <h3 className="text-[var(--color-ink)]">
                   Thông tin cửa hàng
-                </h2>
+                </h3>
                 <div className="space-y-3 text-sm text-[var(--color-ink-light)]">
                   <p>
                     <span className="font-medium text-[var(--color-ink)]">Địa chỉ:</span>{' '}
@@ -77,9 +77,9 @@ export default async function LienHePage() {
               </div>
 
               <div className="rounded-xl border border-[var(--color-border)] bg-white p-6 shadow-[var(--shadow-card)] space-y-4">
-                <h2 className="text-lg font-[var(--font-display)] font-medium text-[var(--color-ink)]">
+                <h3 className="text-[var(--color-ink)]">
                   Đặt hoa ngay
-                </h2>
+                </h3>
                 <p className="text-sm text-[var(--color-ink-light)]">
                   Nhắn tin qua Zalo/Messenger để đặt hoa nhanh, shop hỗ trợ phiên online trong giờ làm việc.
                 </p>
@@ -104,9 +104,9 @@ export default async function LienHePage() {
               </div>
 
               <div className="rounded-xl border border-[var(--color-border)] bg-white p-6 shadow-[var(--shadow-card)]">
-                <h2 className="text-lg font-[var(--font-display)] font-medium text-[var(--color-ink)] text-center">
+                <h3 className="text-[var(--color-ink)] text-center">
                   Kết nối chúng tôi
-                </h2>
+                </h3>
                 <div className="mt-4 flex justify-center gap-4">
                   {[facebookLink || 'https://facebook.com/shopflower.vn', instagramLink || 'https://instagram.com/shopflower.vn'].map(
                     (href, i) => (

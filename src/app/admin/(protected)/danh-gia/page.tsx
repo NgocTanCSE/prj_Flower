@@ -26,7 +26,7 @@ export default async function DanhGiaPage() {
   }))
 
   return (
-    <div className="space-y-6 py-8">
+    <div className="admin-content">
       <PageHeader
         title="Danh sách đánh giá"
         subtitle={`${rows.length} đánh giá trong hệ thống`}

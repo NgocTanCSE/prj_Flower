@@ -9,6 +9,7 @@
  * Service Role). Không bao giờ nhúng key xuống client.
  */
 
+import { createClient as createSupabaseJsClient } from '@supabase/supabase-js'
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
@@ -120,7 +121,13 @@ export async function ssrAuthClient(): Promise<SupabaseClient | null> {
   return createClient()
 }
 
-/** Admin (bypass RLS): dùng service key để truy vấn profiles/hồ sơ người dùng. */
+/**
+ * Admin client dùng session cookie (đọc profile theo RLS, `self_read`).
+ *
+ * Không bypass RLS khi user đã đăng nhập: nếu dùng `createServerClient` + cookie,
+ * Supabase sẽ dùng access token của user cho header `Authorization`. Chỉ dùng
+ * để đọc profile bằng RLS, không dùng cho ghi/upload.
+ */
 export async function ssrAdminClient(): Promise<SupabaseClient | null> {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) return null
   if (!/^https?:\/\//.test(SUPABASE_URL)) return null
@@ -128,6 +135,31 @@ export async function ssrAdminClient(): Promise<SupabaseClient | null> {
   try {
     const methods = await serverCookieMethods()
     return createServerClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, clientOptions(SUPABASE_SERVICE_ROLE_KEY, methods))
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Client ghi/upload: service-role thuần, KHÔNG gắn cookie/session.
+ *
+ * Lý do: nếu dùng `createServerClient` + cookie, Supabase sẽ dùng access token
+ * của user đang đăng nhập cho header `Authorization`. Bucket `assets` chỉ có
+ * policy public SELECT, nên upload/upsert bị RLS chặn. Client này không có
+ * session → `Authorization` dùng service role key → bypass RLS.
+ */
+export async function ssrServiceClient(): Promise<SupabaseClient | null> {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) return null
+  if (!/^https?:\/\//.test(SUPABASE_URL)) return null
+
+  try {
+    return createSupabaseJsClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    })
   } catch {
     return null
   }

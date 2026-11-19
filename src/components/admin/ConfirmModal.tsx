@@ -42,11 +42,11 @@ export function ConfirmModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+    <div className="admin-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
       {/* Focus trap: redirect */}
       <div
         ref={ref}
-        className="relative w-full max-w-sm rounded-xl border border-[#e8e1e1] bg-white p-6 shadow-[0_24px_64px_rgba(92,58,64,0.24)]"
+        className="admin-modal-card relative w-full max-w-sm rounded-xl border border-[#e8e1e1] bg-white p-6 shadow-[0_24px_64px_rgba(92,58,64,0.24)]"
         role="dialog"
         aria-modal="true"
       >

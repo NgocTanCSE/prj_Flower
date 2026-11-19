@@ -1,6 +1,6 @@
 'use server'
 
-import { ssrAdminClient, getProfile, isAdmin as isProfileAdmin } from '@/lib/supabase/server'
+import { ssrServiceClient, getProfile, isAdmin as isProfileAdmin } from '@/lib/supabase/server'
 import { createSupabaseServerClient } from '@/lib/upload'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
@@ -60,7 +60,7 @@ export async function adminSession(): Promise<{ ok: boolean; user: AdminUser | n
 export async function createAdminClient(): Promise<SupabaseClient> {
   await requireAdmin()
 
-  const client = await ssrAdminClient()
+  const client = await ssrServiceClient()
   if (!client) {
     // Service role key chưa cấu hình: yêu cầu quyền ghi không thực hiện được.
     throw new Error('Tài khoản quản trị không thể tạo client ghi (thiếu service key).')

@@ -4,8 +4,9 @@ import { revalidatePath } from 'next/cache'
 import { logAudit } from '@/lib/upload'
 import { createSupabaseClient } from '@/lib/supabase/client'
 import { requireAdmin, createAdminClient } from './auth'
+import { uploadFile } from './upload'
 import { z } from 'zod'
-import { SETTING_KEYS } from '@/lib/getProducts'
+import { COLOR_SETTING_KEYS, SETTING_DEFAULTS, SETTING_KEYS } from '@/lib/getProducts'
 
 // ---------------------------------------------------------------------------
 // Cài đặt site (`settings` bảng: `key` PRIMARY KEY, `value` text)
@@ -38,10 +39,11 @@ export async function getSettingsForAdmin(): Promise<SettingRow[]> {
 
   const existing = new Set((data ?? []).map((s) => s.key))
   const rows: SettingRow[] = data ?? []
-  // Tạo placeholder cho khóa nào chưa tồn tại.
+  // Tạo placeholder cho khóa nào chưa tồn tại — dùng giá trị mặc định thay vì
+  // chuỗi rỗng để admin thấy đúng màu/thiết lập đang được áp dụng.
   for (const key of settingKeys) {
     if (!existing.has(key)) {
-      rows.push({ key, value: '', updated_at: new Date().toISOString() })
+      rows.push({ key, value: SETTING_DEFAULTS[key] ?? '', updated_at: new Date().toISOString() })
     }
   }
   return rows.sort((a, b) => a.key.localeCompare(b.key))
@@ -57,9 +59,24 @@ export async function updateSettings(formData: FormData): Promise<void> {
     throw new Error(`Dữ liệu không hợp lệ: ${parsed.error.issues[0].message}`)
   }
 
+  // Màu theme: chỉ nhận #rgb / #rrggbb (chuỗi rỗng = dùng mặc định). Chặn giá
+  // trị rác để CSS variable không bị hỏng và màu hiển thị sai.
+  const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i
+  for (const key of COLOR_SETTING_KEYS) {
+    const color = (parsed.data[key] ?? '').trim()
+    if (color !== '' && !HEX_COLOR.test(color)) {
+      throw new Error(`${SETTING_KEYS[key]} không hợp lệ: cần mã hex, ví dụ #8b5f65.`)
+    }
+  }
+
   const newRows: SettingRow[] = []
-  for (const [key, value] of Object.entries(parsed.data) as [keyof typeof SETTING_KEYS, string][]) {
-    if (value !== '') newRows.push({ key, value, updated_at: new Date().toISOString() })
+  for (const key of settingKeys) {
+    // Chỉ ghi key THỰC SỰ có trong form. Ghi cả giá trị rỗng để admin có thể
+    // xoá một cài đặt (vd: bỏ ảnh banner để quay về ảnh đầu thư viện).
+    if (!Object.prototype.hasOwnProperty.call(values, key)) continue
+    const raw = parsed.data[key] ?? ''
+    const isColor = (COLOR_SETTING_KEYS as readonly string[]).includes(key)
+    newRows.push({ key, value: isColor ? raw.trim() : raw, updated_at: new Date().toISOString() })
   }
 
   if (newRows.length === 0) return
@@ -102,4 +119,23 @@ export async function updateSetting(key: string, value: string): Promise<{ ok: b
     revalidatePath(path)
   }
   return { ok: true }
+}
+
+/**
+ * Upload ảnh nền banner (hero) từ trang Cài đặt.
+ * Trả `{ ok, url }` thay vì throw để client hiển thị đúng lỗi trong production.
+ */
+export async function uploadHeroImage(formData: FormData): Promise<{ ok: boolean; url?: string; error?: string }> {
+  try {
+    const file = formData.get('file')
+    if (!(file instanceof File) || file.size === 0) {
+      return { ok: false, error: 'Vui lòng chọn một ảnh.' }
+    }
+    // Giữ tên file an toàn cho đường dẫn storage.
+    const safeName = file.name.replace(/[^a-zA-Z0-9_.-]/g, '') || 'hero.jpg'
+    const { url } = await uploadFile(file, `hero/${Date.now()}-${safeName}`)
+    return { ok: true, url }
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : 'Upload ảnh banner thất bại.' }
+  }
 }

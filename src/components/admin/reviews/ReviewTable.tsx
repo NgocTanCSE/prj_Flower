@@ -4,6 +4,7 @@ import * as React from 'react'
 import type { Review } from '@/app/admin/(protected)/danh-gia/actions'
 import { updateReviewStatus, deleteReview } from '@/app/admin/(protected)/danh-gia/actions'
 import { notifyToast } from '@/components/admin/toast/toast'
+import { StableLabel } from '@/components/admin/StableLabel'
 import { ReviewFilters } from './ReviewFilters'
 import { ReviewStatusBadge, starRating, formatDate } from './ReviewStatusBadge'
 
@@ -137,7 +138,7 @@ function ReviewRow({ review, busy, onStatusChange, onDelete }: ReviewRowProps) {
             disabled={!!busy}
             className="rounded-lg bg-[#3f7f63] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#2f5e43] disabled:opacity-40"
           >
-            {busy ? 'Đang tải' : 'Duyệt'}
+            <StableLabel reserve="Đang tải">{busy ? 'Đang tải' : 'Duyệt'}</StableLabel>
           </button>
           <button
             onClick={() => handleStatus({ status: 'pending' })}

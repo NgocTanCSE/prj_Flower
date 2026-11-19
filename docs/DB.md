@@ -86,7 +86,7 @@ CREATE TABLE public.products (
   + Mạng xã hội: `zalo_link`, `messenger_link`, `facebook_link`, `instagram_link`
   + Giao dịch & tiền tệ: `allow_orders`, `currency`, `language`, `shipping_fee`, `free_shipping_min`, `tax_rate`
   + Chính sách & SEO: `cancel_policy`, `delivery_note`, `seo_meta_title`, `seo_meta_description`
-  + Giao diện & thương hiệu (mới): `shop_logo_url`, `shop_favicon_url`, `site_theme_primary`, `site_theme_body`, `shop_hero_title`, `shop_hero_subtitle`
+  + Giao diện & thương hiệu (mới): `shop_logo_url`, `shop_favicon_url`, `site_theme_primary`, `site_theme_body`, `shop_hero_title`, `shop_hero_subtitle`, `hero_panel_count` (số ảnh decor hero, 2–5)
 
 ### `audit_log`
 > ⚠️ Cột `table` là **từ khóa của Postgres**, bắt buộc đặt trong dấu nháy kép `"table"` khi viết SQL thuần:

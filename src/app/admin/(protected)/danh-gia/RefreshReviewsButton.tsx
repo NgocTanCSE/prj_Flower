@@ -5,6 +5,7 @@
 import { useState } from 'react'
 
 import { notifyToast } from '@/components/admin/toast/toast'
+import { StableLabel } from '@/components/admin/StableLabel'
 import { submitRefreshReviews } from './actions'
 
 export function RefreshReviewsButton() {
@@ -31,7 +32,9 @@ export function RefreshReviewsButton() {
         transition-colors hover:bg-[#f4eeef] hover:text-[#8b5f65] active:scale-[0.97]
         disabled:cursor-not-allowed disabled:opacity-60"
     >
-      {pending ? 'Đang làm mới...' : 'Làm mới'}
+      <StableLabel reserve="Đang làm mới...">
+        {pending ? 'Đang làm mới...' : 'Làm mới'}
+      </StableLabel>
     </button>
   )
 }

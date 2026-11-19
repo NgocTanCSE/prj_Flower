@@ -1,18 +1,9 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
 import type { ReactNode } from 'react'
 
 import { getSessionUser, isAdmin } from '@/lib/supabase/server'
-import { logout } from '@/app/(auth)/actions'
-
-const NAV = [
-  { label: 'Danh giá', href: '/admin/danh-gia' },
-  { label: 'Thư viện', href: '/admin/thu-vien' },
-  { label: 'Sản phẩm', href: '/admin/san-pham' },
-  { label: 'Danh mục', href: '/admin/danh-muc' },
-  { label: 'Cài đặt', href: '/admin/cai-dat' },
-  { label: 'Thống kê', href: '/admin/thong-ke' },
-]
+import { AdminLayoutNav } from '@/components/admin/AdminLayoutNav'
+import { ToastContainer } from '@/components/admin/toast/ToastContainer'
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
   // 1. Bảo vệ: session + role admin (kết hợp với middleware.ts).
@@ -21,45 +12,20 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   if (!(await isAdmin(user.profile))) redirect('/')
 
   return (
-    <div className="min-h-screen bg-[#f8f7f6]">
-      {/* ---- Header ---- */}
-      <header className="sticky top-0 z-40 border-b border-[#e8e1e1] bg-white/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
-          <div className="flex items-center gap-6">
-            <Link href="/admin/dashboard" className="text-lg font-bold text-[#8b5f65]">
-              Shop Flower Admin
-            </Link>
-            <nav className="hidden sm:flex">
-              {NAV.map((n) => (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  className="rounded-lg px-3 py-2 text-sm text-[#5b5b5b] transition-colors
-                    hover:bg-[#f4eeef] hover:text-[#8b5f65]"
-                >
-                  {n.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-[#5b5b5b]">{user.profile?.full_name ?? 'Admin'}</span>
-            <form action={logout} method="post">
-              <button
-                type="submit"
-                className="rounded-lg border border-[#e8e1e1] bg-white px-4 py-2 text-sm text-[#5b5b5b]
-                  transition-colors hover:bg-[#f4eeef] hover:text-[#8b5f65]"
-              >
-                Đăng xuất
-              </button>
-            </form>
-          </div>
-        </div>
-      </header>
+    <div className="admin-shell min-h-screen bg-[#f8f7f6] lg:pl-60">
+      {/* ---- Sidebar trái (desktop: cố định; mobile: drawer) ---- */}
+      <AdminLayoutNav userLabel={user.profile?.full_name ?? 'Admin'} />
 
       {/* ---- Body ---- */}
-      <main className="mx-auto max-w-7xl sm:px-4">{children}</main>
+      {/* Sidebar desktop rộng 15rem (fixed). Dùng `lg:pl-60` trên shell để
+          chừa đúng khoảng đó, main chỉ việc chiếm 100% phần còn lại — không
+          còn max-width / margin thủ công nên nội dung luôn full màn hình. */}
+      <main className="admin-main w-full px-4 mt-14 lg:mt-0 lg:px-6 xl:px-8">
+        {children}
+      </main>
+
+      {/* ---- Toasts ---- */}
+      <ToastContainer />
     </div>
   )
 }
